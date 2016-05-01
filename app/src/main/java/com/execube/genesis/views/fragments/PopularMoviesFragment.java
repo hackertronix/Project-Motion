@@ -1,5 +1,6 @@
-package com.execube.genesis.views;
+package com.execube.genesis.views.fragments;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.utils.API;
 import com.execube.genesis.utils.OkHttpHandler;
+import com.execube.genesis.views.activities.DetailsActivity;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -40,6 +42,9 @@ public class PopularMoviesFragment extends Fragment {
     private RecyclerView popularMoviesList = null;
     private View progressBarPopular = null;
 
+    // FIXME: 28/04/16 make it a field
+    private PopularMoviesAdapter mAdapter;
+
     public PopularMoviesFragment() {
         //empty constructor required
     }
@@ -50,24 +55,25 @@ public class PopularMoviesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
+       /* if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
         {
             mMovies=savedInstanceState.getParcelableArrayList(POPULAR_MOVIES_ARRAY);
+            Log.d(TAG, "onCreate: restoring " + mMovies.size());
         }
         else {
-
+            Log.d(TAG, "onCreate: network call");
 
             String url = API.BASE_URL+API.API_KEY+API.SORT_POPULARITY;
             OkHttpHandler handler= new OkHttpHandler(url, apiCallback);
             handler.fetchData();
-        }
+        }*/
     }
 
 
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-
+        Log.d(TAG, "onSaveInstanceState: called");
         outState.putParcelableArrayList(POPULAR_MOVIES_ARRAY,mMovies);//Saving state of the ArrayList to avoid the network calls.
         super.onSaveInstanceState(outState);
     }
@@ -79,16 +85,39 @@ public class PopularMoviesFragment extends Fragment {
         popularMoviesList = (RecyclerView) content.findViewById(R.id.popular_recyclerView);
         progressBarPopular = content.findViewById(R.id.progressBar_popular);
 
+
+        if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
+        {
+            mMovies=savedInstanceState.getParcelableArrayList(POPULAR_MOVIES_ARRAY);
+            Log.d(TAG, "onCreate: restoring " + mMovies.size());
+        }
+        else {
+            Log.d(TAG, "onCreate: network call");
+
+            String url = API.BASE_URL+API.API_KEY+API.SORT_POPULARITY;
+            OkHttpHandler handler= new OkHttpHandler(url, apiCallback);
+            handler.fetchData();
+        }
+
+
+
+
+        // FIXME: 28/04/16 hide the progress bar
+        if (savedInstanceState != null) {
+            progressBarPopular.setVisibility(View.GONE);
+        }
+
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 
-            popularMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            popularMoviesList.setLayoutManager(new
+                    GridLayoutManager(getActivity(), 2));
         }
         else{
             popularMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         }
 
 
-        PopularMoviesAdapter mAdapter = new PopularMoviesAdapter();
+        mAdapter = new PopularMoviesAdapter();
         popularMoviesList.setAdapter(mAdapter);
         return content;
     }
@@ -99,11 +128,13 @@ public class PopularMoviesFragment extends Fragment {
         @Override
         public void onFailure(Call call, IOException e) {
             //TODO show error message from here but in UI thread
+            Log.e(TAG, "onFailure: " + e.getMessage());
         }
 
         @Override
         public void onResponse(Call call, Response response) throws IOException {
             try {
+                Log.d(TAG, "onResponse: parsing movies");
                 mMovies= parseItems(response.body().string());
             } catch (Exception e) {
                 Log.v(TAG,"Exception caught: ",e);
@@ -111,23 +142,47 @@ public class PopularMoviesFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d(TAG, "run: progress bar to visible");
                     progressBarPopular.setVisibility(View.GONE);
-                    popularMoviesList.setVisibility(View.VISIBLE);
-                    //TODO add adapter
+                    if(mAdapter!=null)
+                    {
+
+                        mAdapter.notifyDataSetChanged();
+
+                    }
                 }
             });
         }
     };
 
-    private class PopularMoviesViewHolder extends RecyclerView.ViewHolder{
+    private class PopularMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private ImageView mPosterImage;
+        private Movie mMovie;
 
         public PopularMoviesViewHolder(View itemView) {
             super(itemView);
 
             mPosterImage= (ImageView)itemView.findViewById(R.id.poster);
+            itemView.setOnClickListener(this);
         }
+
+
+        public void bind(Movie movie) {
+
+            mMovie=movie;
+            Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_185+movie.getPosterPath())
+                    .into(mPosterImage);
+            Log.v(TAG,"Done loading images");
+        }
+        @Override
+        public void onClick(View v) {
+            Intent intent= new Intent(getActivity(),DetailsActivity.class);
+            intent.putExtra("PARCEL",mMovie);
+            startActivity(intent);
+        }
+
+
     }
 
     private class PopularMoviesAdapter extends RecyclerView.Adapter<PopularMoviesViewHolder>
@@ -143,15 +198,19 @@ public class PopularMoviesFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(PopularMoviesViewHolder holder, int position) {
-            final Movie movie=mMovies.get(position);
+             Movie movie=mMovies.get(position);
+             holder.bind(movie);
 
-            Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_185+movie.getPosterPath())
-                    .into(holder.mPosterImage);
         }
 
         @Override
         public int getItemCount() {
-            return mMovies.size();
+            // FIXME: 28/04/16
+            if (mMovies == null) {
+                return 0;
+            } else {
+                return mMovies.size();
+            }
         }
     }
 

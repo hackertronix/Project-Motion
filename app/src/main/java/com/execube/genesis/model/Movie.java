@@ -107,7 +107,8 @@ public class Movie implements Parcelable {
 
         @Override
         public Movie[] newArray(int size) {
-            return new Movie[0];
+            // FIXME: 28/04/16 it was creating empty array before
+            return new Movie[size];
         }
     };
 

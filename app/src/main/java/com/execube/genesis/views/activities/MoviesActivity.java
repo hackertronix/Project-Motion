@@ -1,4 +1,4 @@
-package com.execube.genesis.views;
+package com.execube.genesis.views.activities;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -8,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.crashlytics.android.Crashlytics;
 import com.execube.genesis.R;
+import com.execube.genesis.views.fragments.ViewPagerFragment;
+import io.fabric.sdk.android.Fabric;
 
 public class MoviesActivity extends AppCompatActivity {
 
@@ -17,6 +20,7 @@ public class MoviesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_movies);
 
         View view= findViewById(R.id.viewpager_container);
@@ -27,9 +31,10 @@ public class MoviesActivity extends AppCompatActivity {
         }
 
         FragmentManager fragmentManager= getSupportFragmentManager();
-        Fragment fragment= fragmentManager.findFragmentById(R.id.viewpager_container);
+        Fragment fragment;
+        fragmentManager.findFragmentById(R.id.viewpager_container);
 
-        if(fragment==null)
+        if(savedInstanceState==null)
         {
             fragment= new ViewPagerFragment();
             fragmentManager.beginTransaction()

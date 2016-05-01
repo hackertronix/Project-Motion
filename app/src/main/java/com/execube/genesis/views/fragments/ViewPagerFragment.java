@@ -1,4 +1,4 @@
-package com.execube.genesis.views;
+package com.execube.genesis.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,6 +29,8 @@ public class ViewPagerFragment extends Fragment {
         final PopularMoviesFragment fragment1= new PopularMoviesFragment();
         final TopRatedMoviesFragment fragment2= new TopRatedMoviesFragment();
 
+
+
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -42,11 +44,18 @@ public class ViewPagerFragment extends Fragment {
 
             @Override
             public CharSequence getPageTitle(int position) {
-                return position==0?"POPULAR":"TOP RATED";
+//                return position==0?"POPULAR":"TOP RATED";
+                return  null;
+
             }
         });
 
+
+
+
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.popular_movies_tab_icon);
+        tabLayout.getTabAt(1).setIcon(R.drawable.top_rated_movies_tab_icon);
         return view;
 
     }
