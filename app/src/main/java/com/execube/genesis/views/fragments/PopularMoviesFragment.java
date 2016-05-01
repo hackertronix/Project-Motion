@@ -171,7 +171,7 @@ public class PopularMoviesFragment extends Fragment {
         public void bind(Movie movie) {
 
             mMovie=movie;
-            Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_185+movie.getPosterPath())
+            Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_500 +movie.getPosterPath())
                     .into(mPosterImage);
             Log.v(TAG,"Done loading images");
         }
@@ -231,6 +231,8 @@ public class PopularMoviesFragment extends Fragment {
             movie.setPosterPath(movieJson.getString("poster_path"));
             movie.setOverview(movieJson.getString("overview"));
             movie.setVoteAverage((float) movieJson.getDouble("vote_average"));
+            movie.setBackdropPath(movieJson.getString("backdrop_path"));
+            movie.setReleaseDate(movieJson.getString("release_date"));
 
 
             Movies.add(movie);

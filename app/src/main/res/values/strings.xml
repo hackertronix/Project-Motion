@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Project Motion</string>
+    <string name="placeholder_text">Placeholder Text</string>
+    <string name="overview">Overview</string>
 </resources>

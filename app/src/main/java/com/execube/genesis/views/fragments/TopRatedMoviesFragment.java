@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
@@ -152,7 +151,7 @@ public class TopRatedMoviesFragment extends Fragment {
 
         public void bind(Movie movie) {
             mMovie=movie;
-            Picasso.with(getActivity()).load(API.IMAGE_URL + API.IMAGE_SIZE_185 + movie.getPosterPath())
+            Picasso.with(getActivity()).load(API.IMAGE_URL + API.IMAGE_SIZE_500 + movie.getPosterPath())
                     .into(mPosterImage);
         }
 
@@ -212,7 +211,8 @@ public class TopRatedMoviesFragment extends Fragment {
             movie.setPosterPath(movieJson.getString("poster_path"));
             movie.setVoteAverage((float) movieJson.getDouble("vote_average"));
             movie.setTitle(movieJson.getString("title"));
-
+            movie.setBackdropPath(movieJson.getString("backdrop_path"));
+            movie.setReleaseDate(movieJson.getString("release_date"));
             Movies.add(movie);
         }
 
