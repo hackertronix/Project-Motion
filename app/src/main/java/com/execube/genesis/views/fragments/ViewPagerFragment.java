@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.transition.Explode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,11 @@ public class ViewPagerFragment extends Fragment {
         ViewPager viewPager= (ViewPager)view.findViewById(R.id.viewPager);
         TabLayout tabLayout=(TabLayout)view.findViewById(R.id.tabLayout);
 
+
+
         final PopularMoviesFragment fragment1= new PopularMoviesFragment();
         final TopRatedMoviesFragment fragment2= new TopRatedMoviesFragment();
+
 
 
 

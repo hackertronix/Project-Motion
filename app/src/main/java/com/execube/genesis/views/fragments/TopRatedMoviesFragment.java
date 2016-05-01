@@ -1,5 +1,6 @@
 package com.execube.genesis.views.fragments;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -160,7 +161,8 @@ public class TopRatedMoviesFragment extends Fragment {
 
             Intent intent= new Intent(getActivity(), DetailsActivity.class);
             intent.putExtra("PARCEL",mMovie);
-            startActivity(intent);
+            ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(getActivity(),mPosterImage,"posterImage");
+            startActivity(intent,options.toBundle());
         }
 
 

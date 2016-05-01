@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.Explode;
 import android.view.View;
 
 
@@ -30,6 +31,9 @@ public class MoviesActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setExitTransition(new Explode());
+        }
         FragmentManager fragmentManager= getSupportFragmentManager();
         Fragment fragment;
         fragmentManager.findFragmentById(R.id.viewpager_container);

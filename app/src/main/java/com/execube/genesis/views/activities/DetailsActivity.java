@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 
 import com.execube.genesis.R;
@@ -25,6 +28,11 @@ public class DetailsActivity extends FragmentActivity {
 
         if (Build.VERSION.SDK_INT >= 21) {
            getWindow().setStatusBarColor(getResources().getColor(R.color.details_status_bar));
+           Slide slide=new Slide(Gravity.BOTTOM);
+            slide.excludeTarget(android.R.id.statusBarBackground,true);
+            slide.excludeTarget(android.R.id.navigationBarBackground,true);
+            getWindow().setEnterTransition(slide);
+            postponeEnterTransition();
         }
 
         FragmentManager fragmentManager= getSupportFragmentManager();

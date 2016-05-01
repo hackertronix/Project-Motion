@@ -1,5 +1,6 @@
 package com.execube.genesis.views.fragments;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -145,7 +146,6 @@ public class PopularMoviesFragment extends Fragment {
 
         public PopularMoviesViewHolder(View itemView) {
             super(itemView);
-
             mPosterImage= (ImageView)itemView.findViewById(R.id.poster);
             itemView.setOnClickListener(this);
         }
@@ -162,7 +162,8 @@ public class PopularMoviesFragment extends Fragment {
         public void onClick(View v) {
             Intent intent= new Intent(getActivity(),DetailsActivity.class);
             intent.putExtra("PARCEL",mMovie);
-            startActivity(intent);
+            ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(getActivity(),mPosterImage,"posterImage");
+            startActivity(intent,options.toBundle());
         }
 
 
@@ -183,6 +184,7 @@ public class PopularMoviesFragment extends Fragment {
         public void onBindViewHolder(PopularMoviesViewHolder holder, int position) {
              Movie movie=mMovies.get(position);
              holder.bind(movie);
+
 
         }
 

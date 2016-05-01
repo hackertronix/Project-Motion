@@ -12,6 +12,9 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +81,7 @@ public class DetailsFragment extends Fragment {
 
 
 
+
         if (Build.VERSION.SDK_INT != 21) {
             Typeface fontBold= Typeface.createFromAsset(getActivity().getAssets(),"fonts/Gotham-Rounded-Bold.ttf");
             Typeface fontMedium= Typeface.createFromAsset(getActivity().getAssets(),"fonts/Gotham-Rounded-Medium.ttf");
@@ -94,15 +98,7 @@ public class DetailsFragment extends Fragment {
 
         Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_500 +mMovie.getPosterPath())
                 .into(mBackdrop);
-
-        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
-            }
-        });
-
+        getActivity().startPostponedEnterTransition();
 
 
 

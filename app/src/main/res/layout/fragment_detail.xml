@@ -10,7 +10,6 @@
   <android.support.v7.widget.Toolbar
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
-      app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
       android:background="@android:color/transparent"
       android:elevation="10dp"
       android:id="@+id/toolbar"
@@ -101,16 +100,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardElevation="20dp"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="6dp"
                 android:layout_marginLeft="100dp"
-                android:layout_gravity="left|top">
+                android:layout_gravity="left|top"
+                android:transitionName="posterImage">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/details_poster"
                     android:src="@drawable/placeholder"
-                    android:transitionName="posterImage"/>
+                    android:scaleType="fitXY"
+                    />
 
             </android.support.v7.widget.CardView>
 

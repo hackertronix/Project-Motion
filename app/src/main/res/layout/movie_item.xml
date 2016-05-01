@@ -11,14 +11,15 @@
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="6dp"
         android:layout_gravity="center_horizontal"
-        app:cardElevation="10dp">
+        app:cardElevation="12dp"
+        android:transitionName="posterImage">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="7dp"
-        android:transitionName="posterImage"
         android:scaleType="fitXY"
-        android:id="@+id/poster"/>
+        android:id="@+id/poster"
+        />
     </android.support.v7.widget.CardView>
 </RelativeLayout>
