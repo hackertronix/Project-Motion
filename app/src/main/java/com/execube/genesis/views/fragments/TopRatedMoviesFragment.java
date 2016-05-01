@@ -116,7 +116,6 @@ public class TopRatedMoviesFragment extends Fragment {
     private Callback apiCallback = new Callback() {
         @Override
         public void onFailure(Call call, IOException e) {
-            //TODO show error message from here but in UI thread
             Log.e(TAG, "onFailure: " + e.getMessage());
         }
 

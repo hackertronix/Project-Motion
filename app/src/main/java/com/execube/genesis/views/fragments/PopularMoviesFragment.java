@@ -55,25 +55,13 @@ public class PopularMoviesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       /* if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
-        {
-            mMovies=savedInstanceState.getParcelableArrayList(POPULAR_MOVIES_ARRAY);
-            Log.d(TAG, "onCreate: restoring " + mMovies.size());
-        }
-        else {
-            Log.d(TAG, "onCreate: network call");
 
-            String url = API.BASE_URL+API.API_KEY+API.SORT_POPULARITY;
-            OkHttpHandler handler= new OkHttpHandler(url, apiCallback);
-            handler.fetchData();
-        }*/
     }
 
 
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "onSaveInstanceState: called");
         outState.putParcelableArrayList(POPULAR_MOVIES_ARRAY,mMovies);//Saving state of the ArrayList to avoid the network calls.
         super.onSaveInstanceState(outState);
     }
@@ -89,10 +77,8 @@ public class PopularMoviesFragment extends Fragment {
         if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
         {
             mMovies=savedInstanceState.getParcelableArrayList(POPULAR_MOVIES_ARRAY);
-            Log.d(TAG, "onCreate: restoring " + mMovies.size());
         }
         else {
-            Log.d(TAG, "onCreate: network call");
 
             String url = API.BASE_URL+API.API_KEY+API.SORT_POPULARITY;
             OkHttpHandler handler= new OkHttpHandler(url, apiCallback);
@@ -128,21 +114,18 @@ public class PopularMoviesFragment extends Fragment {
         @Override
         public void onFailure(Call call, IOException e) {
             //TODO show error message from here but in UI thread
-            Log.e(TAG, "onFailure: " + e.getMessage());
         }
 
         @Override
         public void onResponse(Call call, Response response) throws IOException {
             try {
-                Log.d(TAG, "onResponse: parsing movies");
+
                 mMovies= parseItems(response.body().string());
             } catch (Exception e) {
-                Log.v(TAG,"Exception caught: ",e);
             }
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "run: progress bar to visible");
                     progressBarPopular.setVisibility(View.GONE);
                     if(mAdapter!=null)
                     {
@@ -173,7 +156,7 @@ public class PopularMoviesFragment extends Fragment {
             mMovie=movie;
             Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_500 +movie.getPosterPath())
                     .into(mPosterImage);
-            Log.v(TAG,"Done loading images");
+
         }
         @Override
         public void onClick(View v) {
@@ -205,7 +188,7 @@ public class PopularMoviesFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            // FIXME: 28/04/16
+
             if (mMovies == null) {
                 return 0;
             } else {

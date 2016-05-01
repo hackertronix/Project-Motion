@@ -69,12 +69,26 @@ public class DetailsFragment extends Fragment {
         intent= getActivity().getIntent();
         mMovie=intent.getExtras().getParcelable("PARCEL");
 
-        Typeface fontBold= Typeface.createFromAsset(getActivity().getAssets(),"fonts/Gotham-Rounded-Bold.ttf");
-        Typeface fontMedium= Typeface.createFromAsset(getActivity().getAssets(),"fonts/Gotham-Rounded-Medium.ttf");
 
-        Typeface fontBold2= Typeface.createFromAsset(getActivity().getAssets(),"fonts/RobotoMono-Medium.ttf");
-        Typeface fontMedium2= Typeface.createFromAsset(getActivity().getAssets(),"fonts/RobotoMono-Regular.ttf");
-        Typeface fontMedium3= Typeface.createFromAsset(getActivity().getAssets(),"fonts/Gotham-Rounded-Book_.ttf");
+        mDetailTitle.setText(mMovie.getTitle());
+        mReleaseDate.setText(mMovie.getReleaseDate());
+        mRatingBar.setProgress((int)mMovie.getVoteAverage());
+        mOverview.setText(mMovie.getOverview());
+
+
+
+
+        if (Build.VERSION.SDK_INT != 21) {
+            Typeface fontBold= Typeface.createFromAsset(getActivity().getAssets(),"fonts/Gotham-Rounded-Bold.ttf");
+            Typeface fontMedium= Typeface.createFromAsset(getActivity().getAssets(),"fonts/Gotham-Rounded-Medium.ttf");
+            Typeface fontMediumLight= Typeface.createFromAsset(getActivity().getAssets(),"fonts/Gotham-Rounded-Book_.ttf");
+
+
+            mDetailTitle.setTypeface(fontBold);
+            mReleaseDate.setTypeface(fontMedium);
+            mOverview.setTypeface(fontMediumLight);
+            mOverviewHeader.setTypeface(fontBold);
+        }
 
 
 
@@ -90,15 +104,6 @@ public class DetailsFragment extends Fragment {
         });
 
 
-        mDetailTitle.setText(mMovie.getTitle());
-        mReleaseDate.setText(mMovie.getReleaseDate());
-        mRatingBar.setProgress((int)mMovie.getVoteAverage());
-        mOverview.setText(mMovie.getOverview());
-
-        mDetailTitle.setTypeface(fontBold);
-        mReleaseDate.setTypeface(fontMedium);
-        mOverview.setTypeface(fontMedium3);
-        mOverviewHeader.setTypeface(fontBold);
 
 
 
