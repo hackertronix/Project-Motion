@@ -8,11 +8,10 @@ public class API {
 
 
     public static String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
-    public static String API_KEY = "api_key=a98debe57ccd9b42fe6b99b9014c80e3";
+    public static String API_KEY = "api_key=YOUR_API_KEY_GOES_HERE";
     public static String SORT_POPULARITY = "&sort_by=popularity.desc";
     public static String SORT_R_RATED = "&certification_country=US&certification=R&sort_by=vote_average.desc&vote_count.gte=250";
     public static String IMAGE_URL = "http://image.tmdb.org/t/p/";
     public static String IMAGE_SIZE_500 = "w500/"; //Because nobody likes blurry images
-    public static final String IMAGE_SIZE_780 ="w780/" ;
+
    }
-//http://image.tmdb.org/t/p/w500//m5O3SZvQ6EgD5XXXLPIP1wLppeW.jpg
