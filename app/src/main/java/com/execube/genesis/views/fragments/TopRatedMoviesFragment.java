@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,15 +99,19 @@ public class TopRatedMoviesFragment extends Fragment {
         }
 
 // CHECKING FOR DEVICE ORIENTATION TO SET NUMBER OF GRID VIEW COLUMNS
+        int numColumns;
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-
-            topRatedMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+            numColumns = (int) (dpWidth / 200);
         }
         else{
-            topRatedMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+            numColumns = (int) (dpWidth / 200);
         }
 
-
+        topRatedMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), numColumns));
         mAdapter=new TopRatedMoviesAdapter();
         topRatedMoviesList.setAdapter(mAdapter);
 
@@ -159,10 +164,8 @@ public class TopRatedMoviesFragment extends Fragment {
         public void onClick(View v) {
 
 
-            Intent intent= new Intent(getActivity(), DetailsActivity.class);
-            intent.putExtra("PARCEL",mMovie);
             ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(getActivity(),mPosterImage,"posterImage");
-            startActivity(intent,options.toBundle());
+            ((openDetailsListener)getActivity()).openDetails(mMovie,options);
         }
 
 
@@ -219,5 +222,8 @@ public class TopRatedMoviesFragment extends Fragment {
 
         return Movies;
     }
-}
 
+    public interface openDetailsListener{
+        void openDetails(Movie movie,ActivityOptions options);
+    }
+}

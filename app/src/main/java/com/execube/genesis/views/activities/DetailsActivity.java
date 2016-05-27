@@ -27,20 +27,28 @@ public class DetailsActivity extends FragmentActivity {
 
 
         if (Build.VERSION.SDK_INT >= 21) {
-           getWindow().setStatusBarColor(getResources().getColor(R.color.details_status_bar));
-           Slide slide=new Slide(Gravity.BOTTOM);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.details_status_bar));
+            Slide slide=new Slide(Gravity.BOTTOM);
             slide.excludeTarget(android.R.id.statusBarBackground,true);
             slide.excludeTarget(android.R.id.navigationBarBackground,true);
             getWindow().setEnterTransition(slide);
             postponeEnterTransition();
         }
 
+
+
+
         FragmentManager fragmentManager= getSupportFragmentManager();
         Fragment fragment= fragmentManager.findFragmentById(R.id.details_container);
 
         if(fragment==null)
         {
-            fragment= new DetailsFragment();
+            Bundle arguments = new Bundle();
+            arguments.putParcelable("PARCEL",
+                    getIntent().getParcelableExtra("PARCEL"));
+
+            fragment = new DetailsFragment();
+            fragment.setArguments(arguments);
             fragmentManager.beginTransaction()
                     .add(R.id.details_container,fragment)
                     .commit();

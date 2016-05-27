@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,16 +95,19 @@ public class PopularMoviesFragment extends Fragment {
             progressBarPopular.setVisibility(View.GONE);
         }
 
+        int numColumns;
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-
-            popularMoviesList.setLayoutManager(new
-                    GridLayoutManager(getActivity(), 2));
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+            numColumns = (int) (dpWidth / 200);
         }
         else{
-            popularMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+            numColumns = (int) (dpWidth / 200);
         }
 
-
+        popularMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), numColumns));
         mAdapter = new PopularMoviesAdapter();
         popularMoviesList.setAdapter(mAdapter);
         return content;
@@ -160,10 +164,9 @@ public class PopularMoviesFragment extends Fragment {
         }
         @Override
         public void onClick(View v) {
-            Intent intent= new Intent(getActivity(),DetailsActivity.class);
-            intent.putExtra("PARCEL",mMovie);
+
             ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(getActivity(),mPosterImage,"posterImage");
-            startActivity(intent,options.toBundle());
+            ((openDetailsListener)getActivity()).openDetails(mMovie,options);
         }
 
 
@@ -182,8 +185,8 @@ public class PopularMoviesFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(PopularMoviesViewHolder holder, int position) {
-             Movie movie=mMovies.get(position);
-             holder.bind(movie);
+            Movie movie=mMovies.get(position);
+            holder.bind(movie);
 
 
         }
@@ -224,5 +227,9 @@ public class PopularMoviesFragment extends Fragment {
         }
 
         return  Movies;
+    }
+
+    public interface openDetailsListener{
+        void openDetails(Movie movie,ActivityOptions options);
     }
 }

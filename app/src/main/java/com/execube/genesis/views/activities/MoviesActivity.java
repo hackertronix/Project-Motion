@@ -1,5 +1,7 @@
 package com.execube.genesis.views.activities;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.Fragment;
@@ -11,11 +13,18 @@ import android.view.View;
 
 
 import com.execube.genesis.R;
+import com.execube.genesis.model.Movie;
+import com.execube.genesis.views.fragments.DetailsFragment;
+import com.execube.genesis.views.fragments.PopularMoviesFragment;
+import com.execube.genesis.views.fragments.TopRatedMoviesFragment;
 import com.execube.genesis.views.fragments.ViewPagerFragment;
 
 
-public class MoviesActivity extends AppCompatActivity {
+public class MoviesActivity extends AppCompatActivity implements PopularMoviesFragment.openDetailsListener,
+        TopRatedMoviesFragment.openDetailsListener{
 
+
+    boolean isTablet;
 
 
     @Override
@@ -24,6 +33,14 @@ public class MoviesActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_movies);
 
+
+        if (findViewById(R.id.details_container) == null)//CHECKING FOR TABLET CONFIGURATION
+        {
+            isTablet=false;
+        }
+        else{
+            isTablet=true;
+        }
         View view= findViewById(R.id.viewpager_container);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -47,6 +64,34 @@ public class MoviesActivity extends AppCompatActivity {
 
         }
 
+
+    }
+
+    @Override
+    public void openDetails(Movie movie,ActivityOptions options) {
+
+        if(isTablet)
+        {
+            /*Intent intent= new Intent(this,DetailsActivity.class);
+            intent.putExtra("PARCEL",movie);
+             startActivity(intent,options.toBundle());*/ // TODO: 5/27/2016 FIX THIS PART TO RETAIN THE TRANSITION
+
+          Bundle bundle=new Bundle();
+            bundle.putParcelable("PARCEL",movie);
+
+            DetailsFragment fragment= new DetailsFragment();
+            fragment.setArguments(bundle);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.details_container,fragment)
+                    .commit();
+}
+
+        else{
+            Intent intent= new Intent(this,DetailsActivity.class);
+            intent.putExtra("PARCEL",movie);
+            startActivity(intent,options.toBundle());
+        }
 
     }
 }
