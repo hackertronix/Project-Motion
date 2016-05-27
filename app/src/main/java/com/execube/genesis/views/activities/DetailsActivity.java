@@ -35,9 +35,6 @@ public class DetailsActivity extends FragmentActivity {
             postponeEnterTransition();
         }
 
-
-
-
         FragmentManager fragmentManager= getSupportFragmentManager();
         Fragment fragment= fragmentManager.findFragmentById(R.id.details_container);
 

@@ -70,11 +70,11 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
     @Override
     public void openDetails(Movie movie,ActivityOptions options) {
 
+        //options parameter is for the transition
+
         if(isTablet)
         {
-            /*Intent intent= new Intent(this,DetailsActivity.class);
-            intent.putExtra("PARCEL",movie);
-             startActivity(intent,options.toBundle());*/ // TODO: 5/27/2016 FIX THIS PART TO RETAIN THE TRANSITION
+           //TODO Retain the transitions.
 
           Bundle bundle=new Bundle();
             bundle.putParcelable("PARCEL",movie);
