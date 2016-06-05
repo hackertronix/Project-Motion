@@ -1,14 +1,12 @@
 package com.execube.genesis.views.fragments;
 
 import android.app.ActivityOptions;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +16,9 @@ import android.widget.ImageView;
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.utils.API;
+import com.execube.genesis.utils.JSONParser;
 import com.execube.genesis.utils.OkHttpHandler;
-import com.execube.genesis.views.activities.DetailsActivity;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,8 +38,9 @@ public class TopRatedMoviesFragment extends Fragment {
     private ArrayList<Movie> mMovies;
     private RecyclerView topRatedMoviesList = null;
     private View progressBarTopRated = null;
-
     private TopRatedMoviesAdapter mAdapter;
+
+
 
     public TopRatedMoviesFragment() {
     }
@@ -93,31 +88,27 @@ public class TopRatedMoviesFragment extends Fragment {
         }
 
 
+
         if(savedInstanceState!=null)
         {
             progressBarTopRated.setVisibility(View.GONE);
         }
 
 // CHECKING FOR DEVICE ORIENTATION TO SET NUMBER OF GRID VIEW COLUMNS
-        int numColumns;
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-            numColumns = (int) (dpWidth / 200);
+
+            topRatedMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         }
         else{
-            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-            numColumns = (int) (dpWidth / 200);
+            topRatedMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         }
 
-        topRatedMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), numColumns));
+
         mAdapter=new TopRatedMoviesAdapter();
         topRatedMoviesList.setAdapter(mAdapter);
 
         return content;
     }
-
 
     private Callback apiCallback = new Callback() {
         @Override
@@ -128,7 +119,8 @@ public class TopRatedMoviesFragment extends Fragment {
         @Override
         public void onResponse(Call call, Response response) throws IOException {
             try {
-                mMovies = parseItems(response.body().string());
+                JSONParser parser= new JSONParser();
+                mMovies = parser.parseMovies(response.body().string());
             } catch (Exception e) {
                 Log.v(TAG, "Exception caught: ", e);
             }
@@ -157,6 +149,8 @@ public class TopRatedMoviesFragment extends Fragment {
         public void bind(Movie movie) {
             mMovie=movie;
             Picasso.with(getActivity()).load(API.IMAGE_URL + API.IMAGE_SIZE_500 + movie.getPosterPath())
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
                     .into(mPosterImage);
         }
 
@@ -199,29 +193,6 @@ public class TopRatedMoviesFragment extends Fragment {
         }
     }
 
-    private ArrayList<Movie> parseItems(String jsonResponse) throws JSONException {
-        //TODO better make ti generic and move it to a parser or utils class
-        JSONObject jsonData = new JSONObject(jsonResponse);
-        JSONArray moviesJSONArray = jsonData.getJSONArray("results");
-        ArrayList<Movie> Movies = new ArrayList<>();
-        for (int i = 0; i < moviesJSONArray.length(); i++) {
-
-            Movie movie = new Movie();
-            JSONObject movieJson = moviesJSONArray.getJSONObject(i);
-
-            movie.setId(movieJson.getInt("id"));
-            movie.setOriginalTitle(movieJson.getString("original_title"));//TODO use constants
-            movie.setOverview(movieJson.getString("overview"));
-            movie.setPosterPath(movieJson.getString("poster_path"));
-            movie.setVoteAverage((float) movieJson.getDouble("vote_average"));
-            movie.setTitle(movieJson.getString("title"));
-            movie.setBackdropPath(movieJson.getString("backdrop_path"));
-            movie.setReleaseDate(movieJson.getString("release_date"));
-            Movies.add(movie);
-        }
-
-        return Movies;
-    }
 
     public interface openDetailsListener{
         void openDetails(Movie movie,ActivityOptions options);

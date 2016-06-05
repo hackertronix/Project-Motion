@@ -19,6 +19,7 @@ public class API {
     public static final String MOVIES_BASE_URL="http://api.themoviedb.org/3/movie/"; //APPEND MOVIE ID AND API KEY
     public static final String YOUTUBE_THUMBNAIL_URL="http://img.youtube.com/vi/"; // APPEND MOVIE KEY AND QUALITY
     public static final String YOUTUBE_TRAILER_URL="https://www.youtube.com/watch?v=";
-    public static final String THUMBNAIL_QUALITY="/mqdefault.jpg";
+    public static final String THUMBNAIL_QUALITY="/hqdefault.jpg";
+
 
    }

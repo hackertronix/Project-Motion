@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:elevation="7dp"
             android:scaleType="fitXY"
+            android:src="@drawable/placeholder"
             android:id="@+id/poster"
             />
     </android.support.v7.widget.CardView>

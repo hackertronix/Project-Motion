@@ -1,15 +1,12 @@
 package com.execube.genesis.views.fragments;
 
 import android.app.ActivityOptions;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +15,9 @@ import android.widget.ImageView;
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.utils.API;
+import com.execube.genesis.utils.JSONParser;
 import com.execube.genesis.utils.OkHttpHandler;
-import com.execube.genesis.views.activities.DetailsActivity;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +36,8 @@ public class PopularMoviesFragment extends Fragment {
     private ArrayList<Movie> mMovies;
     private RecyclerView popularMoviesList = null;
     private View progressBarPopular = null;
+    private boolean deviceIsTablet;
+
 
     // FIXME: 28/04/16 make it a field
     private PopularMoviesAdapter mAdapter;
@@ -74,7 +69,7 @@ public class PopularMoviesFragment extends Fragment {
         View content = inflater.inflate(R.layout.fragment_popular_movies,container,false);
         popularMoviesList = (RecyclerView) content.findViewById(R.id.popular_recyclerView);
         progressBarPopular = content.findViewById(R.id.progressBar_popular);
-
+        deviceIsTablet= getResources().getBoolean(R.bool.is_tablet);
 
         if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
         {
@@ -90,28 +85,25 @@ public class PopularMoviesFragment extends Fragment {
 
 
 
-        // FIXME: 28/04/16 hide the progress bar
         if (savedInstanceState != null) {
             progressBarPopular.setVisibility(View.GONE);
         }
 
-        int numColumns;
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-            numColumns = (int) (dpWidth / 200);
+
+            popularMoviesList.setLayoutManager(new
+                    GridLayoutManager(getActivity(), 2));
         }
         else{
-            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-            float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-            numColumns = (int) (dpWidth / 200);
+            popularMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         }
 
-        popularMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), numColumns));
+
         mAdapter = new PopularMoviesAdapter();
         popularMoviesList.setAdapter(mAdapter);
         return content;
     }
+
 
 
 
@@ -124,8 +116,8 @@ public class PopularMoviesFragment extends Fragment {
         @Override
         public void onResponse(Call call, Response response) throws IOException {
             try {
-
-                mMovies= parseItems(response.body().string());
+                JSONParser parser= new JSONParser();
+                mMovies= parser.parseMovies(response.body().string());
             } catch (Exception e) {
             }
             getActivity().runOnUiThread(new Runnable() {
@@ -158,7 +150,13 @@ public class PopularMoviesFragment extends Fragment {
         public void bind(Movie movie) {
 
             mMovie=movie;
-            Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_500 +movie.getPosterPath())
+            Picasso mPicasso= Picasso.with(getActivity());
+            mPicasso.setIndicatorsEnabled(true);
+
+
+            mPicasso.load(API.IMAGE_URL+API.IMAGE_SIZE_500 +movie.getPosterPath())
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
                     .into(mPosterImage);
 
         }
@@ -203,31 +201,6 @@ public class PopularMoviesFragment extends Fragment {
     }
 
 
-    private ArrayList<Movie> parseItems( String jsonResponse) throws JSONException{
-
-        JSONObject jsonData= new JSONObject(jsonResponse);
-        JSONArray moviesJSONArray= jsonData.getJSONArray("results");
-        ArrayList<Movie> Movies= new ArrayList<>();
-        for (int i = 0; i <moviesJSONArray.length() ; i++) {
-
-            Movie movie= new Movie();
-            JSONObject movieJson= moviesJSONArray.getJSONObject(i);
-
-            movie.setId(movieJson.getInt("id"));
-            movie.setOriginalTitle(movieJson.getString("original_title"));
-            movie.setTitle(movieJson.getString("title"));
-            movie.setPosterPath(movieJson.getString("poster_path"));
-            movie.setOverview(movieJson.getString("overview"));
-            movie.setVoteAverage((float) movieJson.getDouble("vote_average"));
-            movie.setBackdropPath(movieJson.getString("backdrop_path"));
-            movie.setReleaseDate(movieJson.getString("release_date"));
-
-
-            Movies.add(movie);
-        }
-
-        return  Movies;
-    }
 
     public interface openDetailsListener{
         void openDetails(Movie movie,ActivityOptions options);

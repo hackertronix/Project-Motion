@@ -7,21 +7,10 @@
     android:id="@+id/coordinator_layout"
     android:fitsSystemWindows="true">
 
-    <android.support.v7.widget.Toolbar
+   <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:elevation="10dp"
-        android:id="@+id/toolbar"
-        />
-
-
-
-
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,14 +21,17 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="100dp">
 
+                <!--RATING CARD-->
+
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|bottom"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    app:cardCornerRadius="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    app:cardCornerRadius="4dp"
                     app:cardElevation="3dp"
+                    android:elevation="10dp"
                     android:layout_marginTop="40dp"
                     android:layout_marginBottom="30dp">
 
@@ -97,36 +89,42 @@
 
                 </android.support.v7.widget.CardView>
 
+              <!--  MOVIE POSTER CARD-->
+
                 <android.support.v7.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:cardElevation="20dp"
+                    android:elevation="20dp"
                     app:cardCornerRadius="6dp"
                     android:layout_marginLeft="100dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_gravity="left|top"
                     android:transitionName="posterImage">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:elevation="7dp"
                         android:id="@+id/details_poster"
-                        android:src="@drawable/placeholder"
-                        android:scaleType="fitXY"
-                        />
+                        android:src="@drawable/placeholder_debug"
+                        android:scaleType="fitXY"/>
 
                 </android.support.v7.widget.CardView>
 
 
 
             </FrameLayout>
+
+          <!--  OVERVIEW CARD-->
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="20dp"
                 app:cardElevation="10dp"
-                app:cardCornerRadius="8dp">
+                app:cardCornerRadius="4dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -158,9 +156,134 @@
 
 
             </android.support.v7.widget.CardView>
+
+            <!--TRAILERS UNIT-->
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="20dp"
+                app:cardElevation="10dp"
+                app:cardCornerRadius="4dp"
+                android:id="@+id/trailers_card">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Trailers"
+                        android:id="@+id/trailer_header"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:layout_marginBottom="10dp"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/trailer_recycler_view"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:layout_marginBottom="8dp"
+                        android:layout_below="@+id/trailer_header"/>
+
+                    <ProgressBar
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:indeterminate="true"
+                        android:id="@+id/trailers_progressbar"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"/>
+
+                </RelativeLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+
+            <!--REVIEWS UNIT-->
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="20dp"
+                app:cardElevation="10dp"
+                app:cardCornerRadius="4dp"
+                android:id="@+id/reviews_card">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reviews"
+                        android:id="@+id/review_header"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/review_header">
+
+
+                        <android.support.v7.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/review_recycler_view"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                            android:layout_marginRight="@dimen/activity_horizontal_margin"
+                            android:layout_marginBottom="8dp"
+                            android:layout_below="@+id/review_header"/>
+                        
+                    </ScrollView>
+
+                    <ProgressBar
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:indeterminate="true"
+                        android:id="@+id/reviews_progressbar"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"/>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+
+
+
         </LinearLayout>
 
 
 
     </ScrollView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        app:fabSize="normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_favorite_border_black_24dp"
+        app:layout_anchor="@id/scrollView"
+        app:layout_anchorGravity="bottom|right"/>
 </android.support.design.widget.CoordinatorLayout>

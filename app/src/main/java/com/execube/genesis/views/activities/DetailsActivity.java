@@ -28,6 +28,7 @@ public class DetailsActivity extends FragmentActivity {
 
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.details_status_bar));
+
             Slide slide=new Slide(Gravity.BOTTOM);
             slide.excludeTarget(android.R.id.statusBarBackground,true);
             slide.excludeTarget(android.R.id.navigationBarBackground,true);

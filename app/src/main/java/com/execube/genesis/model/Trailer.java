@@ -1,14 +1,38 @@
 package com.execube.genesis.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Prateek Phoenix on 5/22/2016.
  */
-public class Trailer {
+public class Trailer implements Parcelable{
 
-    public String mName;
+    public String mId;
     public String mKey;
+    public String mName;
 
-    public Trailer() {
+    private Trailer(Parcel source)
+    {
+        mId=source.readString();
+        mKey=source.readString();
+        mName=source.readString();
+
+    }
+
+    public Trailer()
+    {
+
+    }
+
+
+
+    public String getId() {
+        return mId;
+    }
+
+    public void setId(String id) {
+        mId = id;
     }
 
     public String getName() {
@@ -26,4 +50,32 @@ public class Trailer {
     public void setKey(String key) {
         mKey = key;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(mId);
+        dest.writeString(mKey);
+        dest.writeString(mName);
+
+    }
+
+
+    public static final Parcelable.Creator<Trailer> CREATOR= new Parcelable.Creator<Trailer>(){
+
+        @Override
+        public Trailer createFromParcel(Parcel source) {
+            return new Trailer(source);
+        }
+
+        @Override
+        public Trailer[] newArray(int size) {
+            return new Trailer[size];
+        }
+    };
 }

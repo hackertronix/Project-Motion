@@ -7,23 +7,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.Review;
+import com.execube.genesis.model.Trailer;
 import com.execube.genesis.utils.API;
+import com.execube.genesis.utils.JSONParser;
 import com.execube.genesis.utils.OkHttpHandler;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +47,7 @@ import okhttp3.Response;
 public class DetailsFragment extends Fragment {
     private static final String TAG = "DETAILS";
     private static final int DEFAULT_NUM_COLORS = 5;
+
     private Movie mMovie;
     public Intent intent;
 
@@ -47,18 +55,50 @@ public class DetailsFragment extends Fragment {
     private TextView mReleaseDate;
     private TextView mOverview;
     private TextView mOverviewHeader;
-
+    private TextView mReviesHeader;
+    private TextView mTrailersHeader;
 
     private ImageView mBackdrop;
     private Toolbar mToolbar;
 
     private RatingBar mRatingBar;
 
-    private ArrayList<Review> mReviews;
+    private ArrayList<Review> mReviews=new ArrayList<>();
+    private ArrayList<Trailer> mTrailers=new ArrayList<>();
 
+    public static final String MOVIE_REVIEWS_ARRAY ="movie_details";
+    private static final String MOVIE_TRAILERS_ARRAY = "movie_reviews";
+    private Typeface fontBold;
+    private Typeface fontMediumLight;
+    private Typeface fontMedium;
+
+    private RecyclerView mReviewRecyclerView;
+    private RecyclerView mTrailerRecyclerView;
+
+    private ProgressBar mReviewsProgressbar;
+    private ProgressBar mTrailersProgressbar;
+
+    private CardView mReviewsCardView;
+
+    private ReviewsAdapter mReviewAdapter;
+    private int NumOfReviews;
+    private TrailersAdapter mTrailerAdapter;
 
     public DetailsFragment() {
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.v(TAG,"Saving state in onSaveInstanceState");
+        outState.putParcelableArrayList(MOVIE_REVIEWS_ARRAY,mReviews);
+        outState.putParcelableArrayList(MOVIE_TRAILERS_ARRAY,mTrailers);
+        super.onSaveInstanceState(outState);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -75,17 +115,32 @@ public class DetailsFragment extends Fragment {
         mReleaseDate = (TextView) view.findViewById(R.id.release_date);
         mOverview = (TextView) view.findViewById(R.id.overview);
         mOverviewHeader = (TextView) view.findViewById(R.id.overview_header);
+        mReviesHeader=(TextView)view.findViewById(R.id.review_header);
+        mTrailersHeader=(TextView)view.findViewById(R.id.trailer_header);
 
         mRatingBar = (RatingBar) view.findViewById(R.id.movie_rating);
 
+        mReviewRecyclerView= (RecyclerView)view.findViewById(R.id.review_recycler_view);
+        mTrailerRecyclerView=(RecyclerView)view.findViewById(R.id.trailer_recycler_view);
 
-        Bundle bundle=getArguments();
-        mMovie=bundle.getParcelable("PARCEL");
+        mReviewsProgressbar=(ProgressBar)view.findViewById(R.id.reviews_progressbar);
+        mTrailersProgressbar=(ProgressBar)view.findViewById(R.id.trailers_progressbar);
 
+
+        mReviewsCardView= (CardView) view.findViewById(R.id.reviews_card);
+        intent = getActivity().getIntent();
+        mMovie = intent.getExtras().getParcelable("PARCEL");
+
+
+
+
+        //PREPPING THE URL FOR QUERY
 
         String id = String.valueOf(mMovie.getId());
         String reviewQueryUrl = API.MOVIES_BASE_URL + id + "/reviews" + API.API_KEY;
-        String trailerQueryUrl = API.MOVIES_BASE_URL+id+"/videos"+API.API_KEY;
+        String trailerQueryUrl = API.MOVIES_BASE_URL + id + "/videos" + API.API_KEY;
+
+
 
         mDetailTitle.setText(mMovie.getTitle());
         mReleaseDate.setText(mMovie.getReleaseDate());
@@ -94,81 +149,231 @@ public class DetailsFragment extends Fragment {
 
 
         if (Build.VERSION.SDK_INT != 21) {
-            Typeface fontBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Gotham-Rounded-Bold.ttf");
-            Typeface fontMedium = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Gotham-Rounded-Medium.ttf");
-            Typeface fontMediumLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Gotham-Rounded-Book_.ttf");
+            fontBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Gotham-Rounded-Bold.ttf");
+            fontMedium = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Gotham-Rounded-Medium.ttf");
+            fontMediumLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Gotham-Rounded-Book_.ttf");
 
 
             mDetailTitle.setTypeface(fontBold);
             mReleaseDate.setTypeface(fontMedium);
             mOverview.setTypeface(fontMediumLight);
             mOverviewHeader.setTypeface(fontBold);
+            mReviesHeader.setTypeface(fontBold);
+            mTrailersHeader.setTypeface(fontBold);
         }
 
 
-        OkHttpHandler handler = new OkHttpHandler(reviewQueryUrl, mCallback);
-        handler.fetchData();
+
+        //FETCHING JSON HERE
+        if(savedInstanceState!=null&&savedInstanceState.containsKey(MOVIE_REVIEWS_ARRAY))
+        {
+            Log.v(TAG,"Restoring from bundle");
+            mReviews=savedInstanceState.getParcelableArrayList(MOVIE_REVIEWS_ARRAY);
+            mTrailers=savedInstanceState.getParcelableArrayList(MOVIE_TRAILERS_ARRAY);
+
+            mReviewsProgressbar.setVisibility(View.GONE);
+            mTrailersProgressbar.setVisibility(View.GONE);
+
+        }
+
+        else {
+            OkHttpHandler reviewsHandler = new OkHttpHandler(reviewQueryUrl, reviewsCallback);
+            reviewsHandler.fetchData();
+
+            OkHttpHandler trailersHandler= new OkHttpHandler(trailerQueryUrl, trailersCallback);
+            trailersHandler.fetchData();
+
+        }
 
         Picasso.with(getActivity()).load(API.IMAGE_URL + API.IMAGE_SIZE_500 + mMovie.getPosterPath())
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error)
                 .into(mBackdrop);
         getActivity().startPostponedEnterTransition();
 
 
+
+        mReviewRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mReviewAdapter= new ReviewsAdapter();
+        mReviewRecyclerView.setAdapter(mReviewAdapter);
+
+        LinearLayoutManager layoutmanager= new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        mTrailerRecyclerView.setLayoutManager(layoutmanager);
+        mTrailerAdapter= new TrailersAdapter();
+        mTrailerRecyclerView.setAdapter(mTrailerAdapter);
         return view;
     }
 
-    private okhttp3.Callback mCallback = new okhttp3.Callback() {
+
+    //OKHTTP CALLBACK FOR NETWORK CALL
+    private okhttp3.Callback reviewsCallback = new okhttp3.Callback() {
         @Override
         public void onFailure(Call call, IOException e) {
             //TODO handle failure on UI thread
         }
 
         @Override
-        public void onResponse(Call call, Response response) throws IOException,IllegalStateException{
+        public void onResponse(Call call, Response response) throws IOException {
 
             try {
-                String jsonResponse= response.body().string();
-                Log.v(TAG,jsonResponse );
-                JSONObject jsonObject = new JSONObject(jsonResponse);
-                int resultCount = jsonObject.getInt("total_results");
-                if (resultCount != 0) {
-                    mReviews = parseReviews(jsonObject);
-                } else
-                    mReviews = null;
+                String JSONData= response.body().string();
+                JSONObject jsonObject = new JSONObject(JSONData);
+                NumOfReviews = jsonObject.getInt("total_results");
+                JSONParser parser = new JSONParser();
+                Log.v(TAG,JSONData);
+                mReviews=parser.parseReviews(JSONData);
 
-            } catch (JSONException e) {
 
-            }
-            catch (IllegalStateException e){}
+
+            } catch (JSONException e) {}
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    if(mReviewAdapter!=null)
+                    {
+                        mReviewsProgressbar.setVisibility(View.GONE);
+                        mReviewAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (NumOfReviews==0)
+                    {
+                        mReviewsCardView.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
         }
     };
 
-    private ArrayList<Review> parseReviews(JSONObject jsonObject) throws JSONException {
-
-
-        ArrayList<Review> Reviews = new ArrayList<>();
-        JSONArray reviewsJSONArray = jsonObject.getJSONArray("results");
-
-        for (int i = 0; i < reviewsJSONArray.length(); i++) {
-
-            Review review = new Review();
-            JSONObject reviewJson = reviewsJSONArray.getJSONObject(i);
-
-            review.setId(reviewJson.getInt("id"));
-            review.setAuthor(reviewJson.getString("author"));
-            review.setContent(reviewJson.getString("content"));
-            review.setTotalResults(reviewJson.getInt("total_results"));
-
-            Reviews.add(review);
+    private okhttp3.Callback trailersCallback = new okhttp3.Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+            //TODO handle failure on UI thread
         }
 
-        return Reviews;
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+
+            try {
+                String json1= response.body().string();
+                JSONParser parser= new JSONParser();
+                Log.v(TAG, json1);
+                mTrailers = parser.parseTrailers(json1);
+
+            } catch (JSONException e) {}
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(mTrailerAdapter!=null)
+                    {
+                        mTrailersProgressbar.setVisibility(View.GONE);
+                        mTrailerAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+    };
+
+    private class ReviewViewHolder extends RecyclerView.ViewHolder{
+        private TextView mAuthorText;
+        private TextView mReviewText;
+        private Review mReview;
+
+        public ReviewViewHolder(View itemView) {
+            super(itemView);
+            mAuthorText= (TextView) itemView.findViewById(R.id.author_textview);
+            mReviewText= (TextView) itemView.findViewById(R.id.review_textview);
+
+        }
+
+        public void bind(Review review)
+        {
+            mReview= review;
+
+            mAuthorText.setText(mReview.getAuthor());
+            mReviewText.setText(mReview.getContent());
+
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP)
+            {
+                mAuthorText.setTypeface(fontBold);
+                mReviewText.setTypeface(fontMediumLight);
+            }
+
+
+        }
     }
 
+    private class ReviewsAdapter extends RecyclerView.Adapter<ReviewViewHolder>{
+
+        @Override
+        public ReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view= LayoutInflater.from(getActivity()).inflate(R.layout.review_item,parent,false);
+            return new ReviewViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ReviewViewHolder holder, int position) {
+            Review review= mReviews.get(position);
+            holder.bind(review);
+        }
+
+        @Override
+        public int getItemCount() {
+            if(mReviews==null)
+            { return 0;}
+            else
+            {return mReviews.size();}
+        }
+    }
+
+    private class TrailerViewHolder extends RecyclerView.ViewHolder{
+        private ImageView mTrailerThumbnail;
+        private Trailer mTrailer;
+        public TrailerViewHolder(View itemView) {
+            super(itemView);
+
+            mTrailerThumbnail=(ImageView)itemView.findViewById(R.id.trailer_thumbnail);
+        }
+
+        public void bind(Trailer trailer)
+        {
+            mTrailer=trailer;
+
+            Picasso picasso =Picasso.with(getActivity());
+            picasso.setIndicatorsEnabled(true);
+            picasso.load(API.YOUTUBE_THUMBNAIL_URL+mTrailer.getKey()+API.THUMBNAIL_QUALITY)
+                    .into(mTrailerThumbnail);
+
+        }
+    }
+
+    private class TrailersAdapter extends RecyclerView.Adapter<TrailerViewHolder>
+    {
+
+        @Override
+        public TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view= LayoutInflater.from(getActivity()).inflate(R.layout.trailer_item,parent,false);
+            return new TrailerViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(TrailerViewHolder holder, int position) {
+            Trailer trailer= mTrailers.get(position);
+            holder.bind(trailer);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mTrailers.size();
+        }
+    }
 
 }
-
-
-
-
 

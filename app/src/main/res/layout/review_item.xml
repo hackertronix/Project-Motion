@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/details_header_text"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="13dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/author_textview"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:textSize="16sp"
+        android:text="Author"/>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="13dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/review_textview"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:textSize="16sp"
+        android:text="Review"/>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="13dp"/>
+  </LinearLayout>
