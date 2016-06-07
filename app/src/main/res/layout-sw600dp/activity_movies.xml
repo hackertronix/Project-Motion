@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             xmlns:app="http://schemas.android.com/apk/res-auto">
+             android:layout_height="match_parent">
 
- <LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -15,6 +14,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/viewpager_container">
+
         </FrameLayout>
         <FrameLayout
             android:id="@+id/details_container"
@@ -23,18 +23,5 @@
             android:layout_weight="1">
         </FrameLayout>
     </LinearLayout>
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        >
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            >
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
-
 
 </FrameLayout>

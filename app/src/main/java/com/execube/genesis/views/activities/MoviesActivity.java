@@ -12,30 +12,28 @@ import android.transition.Explode;
 import android.view.View;
 
 
-import com.crashlytics.android.Crashlytics;
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.views.fragments.DetailsFragment;
 import com.execube.genesis.views.fragments.PopularMoviesFragment;
 import com.execube.genesis.views.fragments.TopRatedMoviesFragment;
 import com.execube.genesis.views.fragments.ViewPagerFragment;
-import io.fabric.sdk.android.Fabric;
+import com.facebook.stetho.Stetho;
 
 
 public class MoviesActivity extends AppCompatActivity implements PopularMoviesFragment.openDetailsListener,
         TopRatedMoviesFragment.openDetailsListener{
 
 
-    public boolean isTablet;
+    boolean isTablet;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
 
         setContentView(R.layout.activity_movies);
-
+        Stetho.initializeWithDefaults(this);
 
         if (findViewById(R.id.details_container) == null)//CHECKING FOR TABLET CONFIGURATION
         {
@@ -49,7 +47,6 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -78,9 +75,9 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
 
         if(isTablet)
         {
-           //TODO Retain the transitions.
+            //TODO Retain the transitions.
 
-          Bundle bundle=new Bundle();
+            Bundle bundle=new Bundle();
             bundle.putParcelable("PARCEL",movie);
 
             DetailsFragment fragment= new DetailsFragment();
@@ -89,7 +86,7 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.details_container,fragment)
                     .commit();
-}
+        }
 
         else{
             Intent intent= new Intent(this,DetailsActivity.class);

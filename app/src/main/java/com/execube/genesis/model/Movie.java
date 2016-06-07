@@ -4,19 +4,22 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.orm.SugarRecord;
+
 /**
  * Created by Prateek Phoenix on 4/24/2016.
  */
-public class Movie implements Parcelable {
+public class Movie extends SugarRecord implements Parcelable {
 
     private int mId;
     private String mOriginalTitle;
     private String mTitle;
-    private  String mPosterPath;
-    private  String mOverview;
-    private  float mVoteAverage;
+    private String mPosterPath;
+    private String mOverview;
+    private float mVoteAverage;
     private String mBackdropPath;
     private String mReleaseDate;
+    private boolean isFavourite = false;
 
 
     private Movie(Parcel source) {
@@ -29,12 +32,20 @@ public class Movie implements Parcelable {
         mVoteAverage=source.readFloat();
         mBackdropPath=source.readString();
         mReleaseDate=source.readString();
+
     }
 
     public Movie() {
 
     }
 
+    public boolean getFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
+    }
 
     public String getReleaseDate() {
         return mReleaseDate;
@@ -44,11 +55,11 @@ public class Movie implements Parcelable {
         mReleaseDate = releaseDate;
     }
 
-    public int getId() {
+    public int getMovieId() {
         return mId;
     }
 
-    public void setId(int id) {
+    public void setMovieId(int id) {
         mId = id;
     }
 

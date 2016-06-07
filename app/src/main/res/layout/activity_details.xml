@@ -4,6 +4,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
              android:id="@+id/details_container"
-             android:background="#232323">
+             android:background="#222222"> <!--232323-->
 
 </FrameLayout>

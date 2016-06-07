@@ -25,7 +25,7 @@ public class JSONParser {
             Movie movie= new Movie();
             JSONObject movieJson= moviesJSONArray.getJSONObject(i);
 
-            movie.setId(movieJson.getInt("id"));
+            movie.setMovieId(movieJson.getInt("id"));
             movie.setOriginalTitle(movieJson.getString("original_title"));
             movie.setTitle(movieJson.getString("title"));
             movie.setPosterPath(movieJson.getString("poster_path"));

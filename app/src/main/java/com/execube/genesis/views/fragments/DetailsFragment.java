@@ -2,16 +2,20 @@ package com.execube.genesis.views.fragments;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
@@ -29,6 +34,7 @@ import com.execube.genesis.model.Trailer;
 import com.execube.genesis.utils.API;
 import com.execube.genesis.utils.JSONParser;
 import com.execube.genesis.utils.OkHttpHandler;
+import com.orm.SugarRecord;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -36,9 +42,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Response;
+
+import static com.execube.genesis.R.drawable.ic_favorite_black_24dp;
 
 
 /**
@@ -49,6 +58,8 @@ public class DetailsFragment extends Fragment {
     private static final int DEFAULT_NUM_COLORS = 5;
 
     private Movie mMovie;
+    private Movie entry,tempMovie;
+    private List<Movie> movie;
     public Intent intent;
 
     private TextView mDetailTitle;
@@ -77,13 +88,16 @@ public class DetailsFragment extends Fragment {
 
     private ProgressBar mReviewsProgressbar;
     private ProgressBar mTrailersProgressbar;
-
+    private CoordinatorLayout mCoordinatorLayout;
     private CardView mReviewsCardView;
+    private FloatingActionButton mFloatingActionButton;
 
     private ReviewsAdapter mReviewAdapter;
     private int NumOfReviews;
     private TrailersAdapter mTrailerAdapter;
 
+    private String id;
+    private boolean isFav;
     public DetailsFragment() {
 
     }
@@ -109,7 +123,6 @@ public class DetailsFragment extends Fragment {
 
 
         mBackdrop = (ImageView) view.findViewById(R.id.details_poster);
-        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
 
         mDetailTitle = (TextView) view.findViewById(R.id.detail_title_text);
         mReleaseDate = (TextView) view.findViewById(R.id.release_date);
@@ -119,24 +132,31 @@ public class DetailsFragment extends Fragment {
         mTrailersHeader=(TextView)view.findViewById(R.id.trailer_header);
 
         mRatingBar = (RatingBar) view.findViewById(R.id.movie_rating);
-
+        mCoordinatorLayout=(CoordinatorLayout)view.findViewById(R.id.coordinator_layout);
         mReviewRecyclerView= (RecyclerView)view.findViewById(R.id.review_recycler_view);
         mTrailerRecyclerView=(RecyclerView)view.findViewById(R.id.trailer_recycler_view);
 
         mReviewsProgressbar=(ProgressBar)view.findViewById(R.id.reviews_progressbar);
         mTrailersProgressbar=(ProgressBar)view.findViewById(R.id.trailers_progressbar);
-
+        mFloatingActionButton=(FloatingActionButton)view.findViewById(R.id.fab);
 
         mReviewsCardView= (CardView) view.findViewById(R.id.reviews_card);
+
+
         intent = getActivity().getIntent();
-        mMovie = intent.getExtras().getParcelable("PARCEL");
+        Bundle bundle=getArguments();
+        mMovie=bundle.getParcelable("PARCEL");
+        tempMovie=mMovie;
+        id = String.valueOf(mMovie.getMovieId());
 
 
+        checkFav();
+        mFloatingActionButton.show();
 
+        assert mMovie != null;
 
         //PREPPING THE URL FOR QUERY
 
-        String id = String.valueOf(mMovie.getId());
         String reviewQueryUrl = API.MOVIES_BASE_URL + id + "/reviews" + API.API_KEY;
         String trailerQueryUrl = API.MOVIES_BASE_URL + id + "/videos" + API.API_KEY;
 
@@ -193,6 +213,8 @@ public class DetailsFragment extends Fragment {
 
 
 
+
+
         mReviewRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mReviewAdapter= new ReviewsAdapter();
         mReviewRecyclerView.setAdapter(mReviewAdapter);
@@ -201,7 +223,54 @@ public class DetailsFragment extends Fragment {
         mTrailerRecyclerView.setLayoutManager(layoutmanager);
         mTrailerAdapter= new TrailersAdapter();
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
+
         return view;
+    }
+
+    private void checkFav() {
+        movie=new ArrayList<>();
+        movie=SugarRecord.find(Movie.class,"m_id=?",id);
+        if(movie.size()==0)
+        {
+            Log.v(TAG,"Null");
+
+            mFloatingActionButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+        }
+        else {
+            Log.v(TAG,"NOT Null");
+
+            mFloatingActionButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+        }
+
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             movie=SugarRecord.find(Movie.class,"m_id=?",id);
+                if(movie.size()>0)
+                {
+                    entry = movie.get(0);
+                    entry.delete();
+                    mFloatingActionButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie removed from Favourites!!",Snackbar.LENGTH_SHORT);
+                    View view= snackbar.getView();
+                    TextView textView = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.YELLOW);
+                    snackbar.show();
+                }
+                else
+                {
+                    entry = tempMovie;
+                    entry.save();
+                    mFloatingActionButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie added to Favourites!!",Snackbar.LENGTH_SHORT);
+                    View view= snackbar.getView();
+                    TextView textView = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.YELLOW);
+                    snackbar.show();
+                }
+
+            }
+        });
     }
 
 
@@ -333,13 +402,15 @@ public class DetailsFragment extends Fragment {
         }
     }
 
-    private class TrailerViewHolder extends RecyclerView.ViewHolder{
+    private class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mTrailerThumbnail;
         private Trailer mTrailer;
+
         public TrailerViewHolder(View itemView) {
             super(itemView);
 
             mTrailerThumbnail=(ImageView)itemView.findViewById(R.id.trailer_thumbnail);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(Trailer trailer)
@@ -350,6 +421,14 @@ public class DetailsFragment extends Fragment {
             picasso.setIndicatorsEnabled(true);
             picasso.load(API.YOUTUBE_THUMBNAIL_URL+mTrailer.getKey()+API.THUMBNAIL_QUALITY)
                     .into(mTrailerThumbnail);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(API.YOUTUBE_TRAILER_URL+mTrailer.getKey()));
+            startActivity(intent);
 
         }
     }
