@@ -31,24 +31,28 @@ public class ViewPagerFragment extends Fragment {
 
         final PopularMoviesFragment fragment1= new PopularMoviesFragment();
         final TopRatedMoviesFragment fragment2= new TopRatedMoviesFragment();
-
+        final FavouritesFragment fragment3= new FavouritesFragment();
 
 
 
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                return position==0?fragment1:fragment2;
+                if(position==0)
+                    return fragment1;
+                else if(position==1)
+                    return fragment2;
+                else
+                    return fragment3;
             }
 
             @Override
             public int getCount() {
-                return 2;
+                return 3;
             }
 
             @Override
             public CharSequence getPageTitle(int position) {
-//                return position==0?"POPULAR":"TOP RATED";
                 return  null;
 
             }
@@ -60,6 +64,7 @@ public class ViewPagerFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.popular_movies_tab_icon);
         tabLayout.getTabAt(1).setIcon(R.drawable.top_rated_movies_tab_icon);
+        tabLayout.getTabAt(2).setIcon(R.drawable.favourite_movies_tab_icon);
         return view;
 
     }

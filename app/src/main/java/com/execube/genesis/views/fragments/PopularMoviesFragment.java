@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,8 +75,12 @@ public class PopularMoviesFragment extends Fragment {
         if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
         {
             mMovies=savedInstanceState.getParcelableArrayList(POPULAR_MOVIES_ARRAY);
+            Log.d(TAG, "onCreate: restoring " + mMovies.size());
         }
         else {
+
+            Log.d(TAG, "onCreate: network call");
+
 
             String url = API.BASE_URL+API.API_KEY+API.SORT_POPULARITY;
             OkHttpHandler handler= new OkHttpHandler(url, apiCallback);
@@ -117,19 +122,18 @@ public class PopularMoviesFragment extends Fragment {
         public void onResponse(Call call, Response response) throws IOException {
             try {
                 JSONParser parser= new JSONParser();
-                mMovies= parser.parseMovies(response.body().string());
-            } catch (Exception e) {
+                String newtworkResponse= response.body().string();
+                mMovies= parser.parseMovies(newtworkResponse);
+                Log.v(TAG,newtworkResponse);
+            } catch (Exception e) { Log.v(TAG, "Exception caught: ", e);
             }
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBarPopular.setVisibility(View.GONE);
-                    if(mAdapter!=null)
-                    {
+                    mAdapter.notifyDataSetChanged();
 
-                        mAdapter.notifyDataSetChanged();
 
-                    }
                 }
             });
         }

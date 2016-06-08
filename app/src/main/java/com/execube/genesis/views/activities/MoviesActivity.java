@@ -15,6 +15,7 @@ import android.view.View;
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.views.fragments.DetailsFragment;
+import com.execube.genesis.views.fragments.FavouritesFragment;
 import com.execube.genesis.views.fragments.PopularMoviesFragment;
 import com.execube.genesis.views.fragments.TopRatedMoviesFragment;
 import com.execube.genesis.views.fragments.ViewPagerFragment;
@@ -22,7 +23,7 @@ import com.facebook.stetho.Stetho;
 
 
 public class MoviesActivity extends AppCompatActivity implements PopularMoviesFragment.openDetailsListener,
-        TopRatedMoviesFragment.openDetailsListener{
+        TopRatedMoviesFragment.openDetailsListener,FavouritesFragment.openDetailsListener{
 
 
     boolean isTablet;
