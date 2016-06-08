@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class FavouritesFragment extends Fragment {
     private RecyclerView mFavouritesRecyclerView;
     ArrayList<Movie> moviesArrayList;
     private FavouritesAdapter mAdapter;
+    private TabLayout mTabLayout;
 
     public FavouritesFragment() {
     }
@@ -40,7 +42,22 @@ public class FavouritesFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.v(TAG,"In OnCreate()");
         super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    public void onPause() {
+        Log.v(TAG,"OnPause() Called");
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        Log.v(TAG,"OnResume() Called");
+        mMovies=Movie.listAll(Movie.class);
+        mAdapter=new FavouritesAdapter();
+        mFavouritesRecyclerView.setAdapter(mAdapter);
+        mFavouritesRecyclerView.invalidate();
+        super.onResume();
     }
 
     @Nullable
@@ -121,6 +138,7 @@ public class FavouritesFragment extends Fragment {
     private class FavouritesAdapter extends RecyclerView.Adapter<FavouritesHolder>
     {
 
+
         @Override
         public FavouritesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view= LayoutInflater.from(getActivity()).inflate(R.layout.movie_item,parent,false);
@@ -129,6 +147,7 @@ public class FavouritesFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(FavouritesHolder holder, int position) {
+
             Movie movie= mMovies.get(position);
             holder.bind(movie);
         }

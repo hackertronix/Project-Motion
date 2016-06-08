@@ -23,7 +23,7 @@ import com.facebook.stetho.Stetho;
 
 
 public class MoviesActivity extends AppCompatActivity implements PopularMoviesFragment.openDetailsListener,
-        TopRatedMoviesFragment.openDetailsListener,FavouritesFragment.openDetailsListener{
+        TopRatedMoviesFragment.openDetailsListener,FavouritesFragment.openDetailsListener,ViewPagerFragment.OnFABTappedInterface {
 
 
     boolean isTablet;
@@ -47,7 +47,7 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().setStatusBarColor(Color.WHITE);
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -95,5 +95,16 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
             startActivity(intent,options.toBundle());
         }
 
+    }
+
+
+    @Override
+    public void OnFabTapped() {
+        Fragment fragment= new FavouritesFragment();
+        FragmentManager fragmentManager= getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.viewpager_container,fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

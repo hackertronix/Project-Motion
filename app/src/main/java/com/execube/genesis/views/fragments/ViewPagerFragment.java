@@ -2,6 +2,7 @@ package com.execube.genesis.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,8 +17,13 @@ import com.execube.genesis.R;
 /**
  * Created by Prateek Phoenix on 4/24/2016.
  */
-public class ViewPagerFragment extends Fragment {
 
+public class ViewPagerFragment extends Fragment {
+    private FloatingActionButton fab;
+
+  public interface OnFABTappedInterface{
+      void OnFabTapped();
+  }
 
     @Nullable
     @Override
@@ -26,8 +32,10 @@ public class ViewPagerFragment extends Fragment {
 
         ViewPager viewPager= (ViewPager)view.findViewById(R.id.viewPager);
         TabLayout tabLayout=(TabLayout)view.findViewById(R.id.tabLayout);
+        fab= (FloatingActionButton)view.findViewById(R.id.fab);
 
 
+        final OnFABTappedInterface listener= (OnFABTappedInterface) getActivity();
 
         final PopularMoviesFragment fragment1= new PopularMoviesFragment();
         final TopRatedMoviesFragment fragment2= new TopRatedMoviesFragment();
@@ -38,17 +46,12 @@ public class ViewPagerFragment extends Fragment {
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                if(position==0)
-                    return fragment1;
-                else if(position==1)
-                    return fragment2;
-                else
-                    return fragment3;
+                return position==0?fragment1:fragment2;
             }
 
             @Override
             public int getCount() {
-                return 3;
+                return 2;
             }
 
             @Override
@@ -64,8 +67,17 @@ public class ViewPagerFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.popular_movies_tab_icon);
         tabLayout.getTabAt(1).setIcon(R.drawable.top_rated_movies_tab_icon);
-        tabLayout.getTabAt(2).setIcon(R.drawable.favourite_movies_tab_icon);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.OnFabTapped();
+            }
+        });
+
         return view;
 
     }
+
+
 }
