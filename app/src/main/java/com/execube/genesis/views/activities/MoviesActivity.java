@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
+import com.execube.genesis.utils.EventBus;
 import com.execube.genesis.views.fragments.DetailsFragment;
 import com.execube.genesis.views.fragments.FavouritesFragment;
 import com.execube.genesis.views.fragments.PopularMoviesFragment;
@@ -23,10 +24,11 @@ import com.facebook.stetho.Stetho;
 
 
 public class MoviesActivity extends AppCompatActivity implements PopularMoviesFragment.openDetailsListener,
-        TopRatedMoviesFragment.openDetailsListener,FavouritesFragment.openDetailsListener,ViewPagerFragment.OnFABTappedInterface {
+        TopRatedMoviesFragment.openDetailsListener,FavouritesFragment.openDetailsListener {
 
 
     boolean isTablet;
+    EventBus bus;
 
 
     @Override
@@ -35,6 +37,8 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
 
         setContentView(R.layout.activity_movies);
         Stetho.initializeWithDefaults(this);
+
+
 
         if (findViewById(R.id.details_container) == null)//CHECKING FOR TABLET CONFIGURATION
         {
@@ -69,6 +73,9 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
 
     }
 
+
+
+
     @Override
     public void openDetails(Movie movie,ActivityOptions options) {
 
@@ -98,7 +105,7 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
     }
 
 
-    @Override
+  /*  @Override
     public void OnFabTapped() {
         Fragment fragment= new FavouritesFragment();
         FragmentManager fragmentManager= getSupportFragmentManager();
@@ -106,5 +113,5 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
                 .replace(R.id.viewpager_container,fragment)
                 .addToBackStack(null)
                 .commit();
-    }
+    }*/
 }

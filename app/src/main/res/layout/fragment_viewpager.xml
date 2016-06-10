@@ -26,13 +26,5 @@
 
 
     </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabSize="normal"
-        app:layout_anchor="@id/linearLayout"
-        android:layout_margin="16dp"
-        android:id="@+id/fab"
-        android:src="@drawable/ic_favorite_black_24dp"
-        app:layout_anchorGravity="bottom|right"/>
+
 </android.support.design.widget.CoordinatorLayout>

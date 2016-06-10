@@ -32,7 +32,7 @@ import okhttp3.Response;
  */
 public class TopRatedMoviesFragment extends Fragment {
 
-    private static final String TAG = "TOP";
+    private static final String TAG = "TAG";
     public static final String TOP_RATED_MOVIES_ARRAY="top_rated_movies";
 
     private ArrayList<Movie> mMovies;
@@ -46,12 +46,27 @@ public class TopRatedMoviesFragment extends Fragment {
     }
 
 
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.v(TAG,"TopRated OnCreate");
+
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.v(TAG,"TopRated OnPause");
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(TAG,"TopRated OnResume");
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

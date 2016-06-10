@@ -1,7 +1,9 @@
 package com.execube.genesis.views.fragments;
 
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -13,11 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.execube.genesis.R;
+import com.execube.genesis.model.Event;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.utils.API;
+import com.execube.genesis.utils.EventBus;
 import com.orm.SugarRecord;
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,7 +34,7 @@ import java.util.List;
  */
 public class FavouritesFragment extends Fragment {
 
-    public static final String TAG= "FAVOURITES";
+    public static final String TAG= "TAG";
     private static final String FAVOURITE_MOVIES_ARRAY = "favourite_movies";
     private List<Movie> mMovies=new ArrayList<>();
     private RecyclerView mFavouritesRecyclerView;
@@ -40,25 +46,38 @@ public class FavouritesFragment extends Fragment {
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.v(TAG,"In OnCreate()");
         super.onCreate(savedInstanceState);
+        Log.v(TAG,"Favourite OnCreate");
     }
 
-    @Override
-    public void onPause() {
-        Log.v(TAG,"OnPause() Called");
-        super.onPause();
-    }
 
     @Override
     public void onResume() {
-        Log.v(TAG,"OnResume() Called");
+     /*   Sugar ORM does not have a Loader
+          so to refresh the recyclerview adapter I am reinitializing it*/
+        super.onResume();
+        EventBus.getBus().register(this);
+
+
+        Log.v(TAG,"Favourite OnResume");
+
         mMovies=Movie.listAll(Movie.class);
         mAdapter=new FavouritesAdapter();
         mFavouritesRecyclerView.setAdapter(mAdapter);
         mFavouritesRecyclerView.invalidate();
-        super.onResume();
+
     }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Log.v(TAG,"Favourite OnPause");
+        EventBus.getBus().unregister(this);
+    }
+
+
 
     @Nullable
     @Override
@@ -117,6 +136,7 @@ public class FavouritesFragment extends Fragment {
                     .into(mPosterImageView);
         }
 
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onClick(View v) {
 
@@ -157,9 +177,25 @@ public class FavouritesFragment extends Fragment {
             return mMovies.size();
         }
     }
+
+
     public interface openDetailsListener{
         void openDetails(Movie movie,ActivityOptions options);
     }
-}
 
+
+    @Subscribe
+
+    //WorkAround to achieve Database Synchronisation with the Favourites RecyclerView
+
+    public void onEventReceived(Event event)
+    {
+      String message= event.getMessage();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        mMovies=Movie.listAll(Movie.class);
+        mAdapter=new FavouritesAdapter();
+        mFavouritesRecyclerView.setAdapter(mAdapter);
+        mFavouritesRecyclerView.invalidateItemDecorations();
+    }
+}
 

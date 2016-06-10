@@ -32,7 +32,7 @@ import okhttp3.Response;
  */
 public class PopularMoviesFragment extends Fragment {
 
-    private static final String TAG = "HELLO WORLD";
+    private static final String TAG = "TAG";
     private static final String POPULAR_MOVIES_ARRAY ="popular_movies" ;
     private ArrayList<Movie> mMovies;
     private RecyclerView popularMoviesList = null;
@@ -58,11 +58,11 @@ public class PopularMoviesFragment extends Fragment {
         if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
         {
             mMovies=savedInstanceState.getParcelableArrayList(POPULAR_MOVIES_ARRAY);
-            Log.d(TAG, "onCreate: restoring " + mMovies.size());
+         Log.d(TAG, "Popular onCreate: restoring " + mMovies.size());
         }
         else {
 
-            Log.d(TAG, "onCreate: network call");
+           Log.d(TAG, "Popular onCreate: network call");
 
 
             String url = API.BASE_URL+API.API_KEY+API.SORT_POPULARITY;
@@ -96,14 +96,28 @@ public class PopularMoviesFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.v(TAG,"Popular OnCreate");
+
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.v(TAG,"Popular OnPause");
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(TAG,"Popular OnResume");
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(POPULAR_MOVIES_ARRAY,mMovies);//Saving state of the ArrayList to avoid the network calls.
         super.onSaveInstanceState(outState);
+        Log.v(TAG,"Popular Saving State");
+
     }
 
 
@@ -119,7 +133,7 @@ public class PopularMoviesFragment extends Fragment {
                 JSONParser parser= new JSONParser();
                 String newtworkResponse= response.body().string();
                 mMovies= parser.parseMovies(newtworkResponse);
-                Log.v(TAG,newtworkResponse);
+
             } catch (Exception e) { Log.v(TAG, "Exception caught: ", e);
             }
             getActivity().runOnUiThread(new Runnable() {

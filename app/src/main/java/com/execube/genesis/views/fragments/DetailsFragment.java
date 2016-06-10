@@ -28,10 +28,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.execube.genesis.R;
+import com.execube.genesis.model.Event;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.Review;
 import com.execube.genesis.model.Trailer;
 import com.execube.genesis.utils.API;
+import com.execube.genesis.utils.EventBus;
 import com.execube.genesis.utils.JSONParser;
 import com.execube.genesis.utils.OkHttpHandler;
 import com.orm.SugarRecord;
@@ -76,6 +78,7 @@ public class DetailsFragment extends Fragment {
 
     private ArrayList<Review> mReviews=new ArrayList<>();
     private ArrayList<Trailer> mTrailers=new ArrayList<>();
+    private List<Movie> updatedFavsList= new ArrayList<>();
 
     public static final String MOVIE_REVIEWS_ARRAY ="movie_details";
     private static final String MOVIE_TRAILERS_ARRAY = "movie_reviews";
@@ -250,6 +253,10 @@ public class DetailsFragment extends Fragment {
                 {
                     entry = movie.get(0);
                     entry.delete();
+
+                    Event event = new Event("Database has been modified!!");
+                    EventBus.getBus().post(event);
+
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie removed from Favourites!!",Snackbar.LENGTH_SHORT);
                     View view= snackbar.getView();
@@ -261,6 +268,8 @@ public class DetailsFragment extends Fragment {
                 {
                     entry = tempMovie;
                     entry.save();
+                    Event event = new Event("Database has been modified!!");
+                    EventBus.getBus().post(event);
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_black_24dp);
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie added to Favourites!!",Snackbar.LENGTH_SHORT);
                     View view= snackbar.getView();
@@ -289,7 +298,6 @@ public class DetailsFragment extends Fragment {
                 JSONObject jsonObject = new JSONObject(JSONData);
                 NumOfReviews = jsonObject.getInt("total_results");
                 JSONParser parser = new JSONParser();
-                Log.v(TAG,JSONData);
                 mReviews=parser.parseReviews(JSONData);
 
 
@@ -332,7 +340,6 @@ public class DetailsFragment extends Fragment {
             try {
                 String json1= response.body().string();
                 JSONParser parser= new JSONParser();
-                Log.v(TAG, json1);
                 mTrailers = parser.parseTrailers(json1);
 
             } catch (JSONException e) {}
