@@ -2,7 +2,7 @@ package com.execube.genesis;
 
 import android.app.Application;
 
-import com.facebook.stetho.Stetho;
+
 import com.orm.SugarContext;
 import com.squareup.otto.Bus;
 

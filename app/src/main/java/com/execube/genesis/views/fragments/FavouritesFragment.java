@@ -127,10 +127,7 @@ public class FavouritesFragment extends Fragment {
         public void bind(Movie movie)
         {
             mMovie=movie;
-            Picasso mPicasso= Picasso.with(getActivity());
-            mPicasso.setIndicatorsEnabled(true);
-
-            mPicasso.load(API.IMAGE_URL+API.IMAGE_SIZE_500+mMovie.getPosterPath())
+            Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_500+mMovie.getPosterPath())
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.error)
                     .into(mPosterImageView);

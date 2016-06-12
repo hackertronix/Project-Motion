@@ -304,27 +304,30 @@ public class DetailsFragment extends Fragment {
 
             } catch (JSONException e) {}
 
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+           if(getActivity()!=null)
+           {
+               getActivity().runOnUiThread(new Runnable() {
+                   @Override //THIS IS THE FIRST LINE WHERE I GET A NULL POINTER EXCEPTION
+                   public void run() {
 
-                    if(mReviewAdapter!=null)
-                    {
-                        mReviewsProgressbar.setVisibility(View.GONE);
-                        mReviewAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
+                       if(mReviewAdapter!=null)
+                       {
+                           mReviewsProgressbar.setVisibility(View.GONE);
+                           mReviewAdapter.notifyDataSetChanged();
+                       }
+                   }
+               });
 
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (NumOfReviews==0)
-                    {
-                        mReviewsCardView.setVisibility(View.INVISIBLE);
-                    }
-                }
-            });
+               getActivity().runOnUiThread(new Runnable() {
+                   @Override
+                   public void run() {
+                       if (NumOfReviews==0)
+                       {
+                           mReviewsCardView.setVisibility(View.INVISIBLE);
+                       }
+                   }
+               });
+           }
         }
     };
 
@@ -344,16 +347,19 @@ public class DetailsFragment extends Fragment {
 
             } catch (JSONException e) {}
 
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(mTrailerAdapter!=null)
-                    {
-                        mTrailersProgressbar.setVisibility(View.GONE);
-                        mTrailerAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
+           if(getActivity()!=null)
+           {
+               getActivity().runOnUiThread(new Runnable() {
+                   @Override
+                   public void run() {  //THIS IS THE 2nd LINE WHERE I GET A NULL POINTER EXCEPTION
+                       if(mTrailerAdapter!=null)
+                       {
+                           mTrailersProgressbar.setVisibility(View.GONE);
+                           mTrailerAdapter.notifyDataSetChanged();
+                       }
+                   }
+               });
+           }
         }
     };
 
@@ -424,10 +430,8 @@ public class DetailsFragment extends Fragment {
         {
             mTrailer=trailer;
 
-            Picasso picasso =Picasso.with(getActivity());
-            picasso.setIndicatorsEnabled(true);
-            picasso.load(API.YOUTUBE_THUMBNAIL_URL+mTrailer.getKey()+API.THUMBNAIL_QUALITY)
-                    .into(mTrailerThumbnail);
+            Picasso.with(getActivity()).load(API.YOUTUBE_THUMBNAIL_URL+mTrailer.getKey()+API.THUMBNAIL_QUALITY)
+                    .placeholder(R.drawable.trailer_thumbnail_placeholder).into(mTrailerThumbnail);
 
         }
 

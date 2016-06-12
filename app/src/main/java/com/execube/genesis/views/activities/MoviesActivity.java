@@ -20,7 +20,6 @@ import com.execube.genesis.views.fragments.FavouritesFragment;
 import com.execube.genesis.views.fragments.PopularMoviesFragment;
 import com.execube.genesis.views.fragments.TopRatedMoviesFragment;
 import com.execube.genesis.views.fragments.ViewPagerFragment;
-import com.facebook.stetho.Stetho;
 
 
 public class MoviesActivity extends AppCompatActivity implements PopularMoviesFragment.openDetailsListener,
@@ -36,7 +35,6 @@ public class MoviesActivity extends AppCompatActivity implements PopularMoviesFr
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_movies);
-        Stetho.initializeWithDefaults(this);
 
 
 
