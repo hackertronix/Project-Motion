@@ -65,7 +65,7 @@ public class PopularMoviesFragment extends Fragment {
            Log.d(TAG, "Popular onCreate: network call");
 
 
-            String url = API.BASE_URL+API.API_KEY+API.SORT_POPULARITY;
+            String url = API.BASE_URL+API.POPULAR+API.API_KEY+API.SORT_POPULARITY;
             OkHttpHandler handler= new OkHttpHandler(url, apiCallback);
             handler.fetchData();
         }

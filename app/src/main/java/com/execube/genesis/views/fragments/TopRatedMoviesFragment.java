@@ -96,7 +96,7 @@ public class TopRatedMoviesFragment extends Fragment {
             Log.d(TAG, "onCreate: network call");
 
 
-            String url = API.BASE_URL + API.API_KEY + API.SORT_R_RATED;
+            String url = API.BASE_URL+API.TOP_RATED+ API.API_KEY + API.SORT_R_RATED;
             OkHttpHandler handler = new OkHttpHandler(url, apiCallback);
             handler.fetchData();//TODO use http caching
 
