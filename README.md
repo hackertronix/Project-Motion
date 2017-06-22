@@ -1,10 +1,11 @@
 
 
-#Project-Motion
+
+# Project-Motion
 
 ###   This is one of the apps built for Udacity's **Android Developer Nanodegree.**
 </br>
-The app queries **themoviedb API** to fetch the **popular** and **top-rated** movies and displays them in a RecyclerView. Movies can be marked favourite for offline access.
+The app queries **TheMovieDB API** to fetch the **popular** and **top-rated** movies and displays them in a RecyclerView. Movies can be marked favourite for offline access.
 </br>
 </br>
 </br>
@@ -32,6 +33,86 @@ The app queries **themoviedb API** to fetch the **popular** and **top-rated** mo
  - [**Otto**](http://square.github.io/otto/)
  - [**Sugar ORM**](http://satyan.github.io/sugar/)
  - [**Android Design Support Library**](http://android-developers.blogspot.in/2015/05/android-design-support-library.html)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
