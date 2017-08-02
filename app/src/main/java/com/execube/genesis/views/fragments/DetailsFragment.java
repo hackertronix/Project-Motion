@@ -125,25 +125,25 @@ public class DetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
 
-        mBackdrop = (ImageView) view.findViewById(R.id.details_poster);
+        mBackdrop = view.findViewById(R.id.details_poster);
 
-        mDetailTitle = (TextView) view.findViewById(R.id.detail_title_text);
-        mReleaseDate = (TextView) view.findViewById(R.id.release_date);
-        mOverview = (TextView) view.findViewById(R.id.overview);
-        mOverviewHeader = (TextView) view.findViewById(R.id.overview_header);
-        mReviesHeader=(TextView)view.findViewById(R.id.review_header);
-        mTrailersHeader=(TextView)view.findViewById(R.id.trailer_header);
+        mDetailTitle = view.findViewById(R.id.detail_title_text);
+        mReleaseDate = view.findViewById(R.id.release_date);
+        mOverview = view.findViewById(R.id.overview);
+        mOverviewHeader = view.findViewById(R.id.overview_header);
+        mReviesHeader= view.findViewById(R.id.review_header);
+        mTrailersHeader= view.findViewById(R.id.trailer_header);
 
-        mRatingBar = (RatingBar) view.findViewById(R.id.movie_rating);
-        mCoordinatorLayout=(CoordinatorLayout)view.findViewById(R.id.coordinator_layout);
-        mReviewRecyclerView= (RecyclerView)view.findViewById(R.id.review_recycler_view);
-        mTrailerRecyclerView=(RecyclerView)view.findViewById(R.id.trailer_recycler_view);
+        mRatingBar = view.findViewById(R.id.movie_rating);
+        mCoordinatorLayout= view.findViewById(R.id.coordinator_layout);
+        mReviewRecyclerView= view.findViewById(R.id.review_recycler_view);
+        mTrailerRecyclerView= view.findViewById(R.id.trailer_recycler_view);
 
-        mReviewsProgressbar=(ProgressBar)view.findViewById(R.id.reviews_progressbar);
-        mTrailersProgressbar=(ProgressBar)view.findViewById(R.id.trailers_progressbar);
-        mFloatingActionButton=(FloatingActionButton)view.findViewById(R.id.fab);
+        mReviewsProgressbar= view.findViewById(R.id.reviews_progressbar);
+        mTrailersProgressbar= view.findViewById(R.id.trailers_progressbar);
+        mFloatingActionButton= view.findViewById(R.id.fab);
 
-        mReviewsCardView= (CardView) view.findViewById(R.id.reviews_card);
+        mReviewsCardView= view.findViewById(R.id.reviews_card);
 
 
         intent = getActivity().getIntent();
@@ -232,6 +232,8 @@ public class DetailsFragment extends Fragment {
 
     private void checkFav() {
         movie=new ArrayList<>();
+
+        //TODO 4: Fix with Realm
         movie=SugarRecord.find(Movie.class,"m_id=?",id);
         if(movie.size()==0)
         {
@@ -248,10 +250,14 @@ public class DetailsFragment extends Fragment {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //TODO 5: Fix with Realm
              movie=SugarRecord.find(Movie.class,"m_id=?",id);
                 if(movie.size()>0)
                 {
                     entry = movie.get(0);
+
+                    //TODO 6: Inspect behaviour
                     entry.delete();
 
                     Event event = new Event("Database has been modified!!");
@@ -260,20 +266,22 @@ public class DetailsFragment extends Fragment {
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie removed from Favourites!!",Snackbar.LENGTH_SHORT);
                     View view= snackbar.getView();
-                    TextView textView = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
                     textView.setTextColor(Color.YELLOW);
                     snackbar.show();
                 }
                 else
                 {
                     entry = tempMovie;
+
+                    ////TODO 6: Inspect Behaviour
                     entry.save();
                     Event event = new Event("Database has been modified!!");
                     EventBus.getBus().post(event);
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_black_24dp);
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie added to Favourites!!",Snackbar.LENGTH_SHORT);
                     View view= snackbar.getView();
-                    TextView textView = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView textView = view.findViewById(android.support.design.R.id.snackbar_text);
                     textView.setTextColor(Color.YELLOW);
                     snackbar.show();
                 }
@@ -370,8 +378,8 @@ public class DetailsFragment extends Fragment {
 
         public ReviewViewHolder(View itemView) {
             super(itemView);
-            mAuthorText= (TextView) itemView.findViewById(R.id.author_textview);
-            mReviewText= (TextView) itemView.findViewById(R.id.review_textview);
+            mAuthorText= itemView.findViewById(R.id.author_textview);
+            mReviewText= itemView.findViewById(R.id.review_textview);
 
         }
 
@@ -422,7 +430,7 @@ public class DetailsFragment extends Fragment {
         public TrailerViewHolder(View itemView) {
             super(itemView);
 
-            mTrailerThumbnail=(ImageView)itemView.findViewById(R.id.trailer_thumbnail);
+            mTrailerThumbnail= itemView.findViewById(R.id.trailer_thumbnail);
             itemView.setOnClickListener(this);
         }
 

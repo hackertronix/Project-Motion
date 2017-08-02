@@ -9,7 +9,7 @@ import com.orm.SugarRecord;
 /**
  * Created by Prateek Phoenix on 4/24/2016.
  */
-public class Movie extends SugarRecord implements Parcelable {
+public class Movie implements Parcelable {
 
     private int mId;
     private String mOriginalTitle;

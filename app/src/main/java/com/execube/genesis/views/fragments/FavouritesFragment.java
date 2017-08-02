@@ -53,6 +53,8 @@ public class FavouritesFragment extends Fragment {
 
     @Override
     public void onResume() {
+
+
      /*   Sugar ORM does not have a Loader
           so to refresh the recyclerview adapter I am reinitializing it*/
         super.onResume();
@@ -61,6 +63,7 @@ public class FavouritesFragment extends Fragment {
 
         Log.v(TAG,"Favourite OnResume");
 
+        //TODO 1: Fix with Realm
         mMovies=Movie.listAll(Movie.class);
         mAdapter=new FavouritesAdapter();
         mFavouritesRecyclerView.setAdapter(mAdapter);
@@ -93,6 +96,7 @@ public class FavouritesFragment extends Fragment {
         }
 
         else {
+            //TODO 2: Fix with Realm
             mMovies=  Movie.listAll(Movie.class);
         }
 
@@ -189,6 +193,8 @@ public class FavouritesFragment extends Fragment {
     {
       String message= event.getMessage();
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
+        //TODO 3: Fix with Realm
         mMovies=Movie.listAll(Movie.class);
         mAdapter=new FavouritesAdapter();
         mFavouritesRecyclerView.setAdapter(mAdapter);
