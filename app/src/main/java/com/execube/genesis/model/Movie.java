@@ -3,15 +3,18 @@ package com.execube.genesis.model;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.orm.SugarRecord;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Prateek Phoenix on 4/24/2016.
  */
-public class Movie implements Parcelable {
+public class Movie extends RealmObject implements Parcelable {
 
+    @PrimaryKey
     private int mId;
+
+
     private String mOriginalTitle;
     private String mTitle;
     private String mPosterPath;

@@ -35,9 +35,7 @@ import com.execube.genesis.model.Trailer;
 import com.execube.genesis.utils.API;
 import com.execube.genesis.utils.EventBus;
 import com.execube.genesis.utils.JSONParser;
-import com.execube.genesis.utils.OkHttpHandler;
-import com.orm.SugarRecord;
-import com.squareup.picasso.Picasso;
+import com.execube.genesis.utils.OkHttpHandler;import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
