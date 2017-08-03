@@ -43,4 +43,13 @@ public class MoviesDataSource {
         return moviesList;
 
     }
+
+    public Movie findMovieByid(String id) {
+
+        Movie movie = realm.where(Movie.class)
+                .equalTo("mId",id)
+                .findFirst();
+
+        return movie;
+    }
 }

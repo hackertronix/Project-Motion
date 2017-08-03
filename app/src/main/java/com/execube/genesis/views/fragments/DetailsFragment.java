@@ -35,6 +35,7 @@ import com.execube.genesis.model.Trailer;
 import com.execube.genesis.utils.API;
 import com.execube.genesis.utils.EventBus;
 import com.execube.genesis.utils.JSONParser;
+import com.execube.genesis.utils.MoviesDataSource;
 import com.execube.genesis.utils.OkHttpHandler;import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -59,7 +60,6 @@ public class DetailsFragment extends Fragment {
 
     private Movie mMovie;
     private Movie entry,tempMovie;
-    private List<Movie> movie;
     public Intent intent;
 
     private TextView mDetailTitle;
@@ -96,6 +96,7 @@ public class DetailsFragment extends Fragment {
     private ReviewsAdapter mReviewAdapter;
     private int NumOfReviews;
     private TrailersAdapter mTrailerAdapter;
+    private MoviesDataSource dataSource;
 
     private String id;
     private boolean isFav;
@@ -106,6 +107,8 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dataSource = new MoviesDataSource();
+        dataSource.open();
     }
 
     @Override
@@ -114,6 +117,13 @@ public class DetailsFragment extends Fragment {
         outState.putParcelableArrayList(MOVIE_REVIEWS_ARRAY,mReviews);
         outState.putParcelableArrayList(MOVIE_TRAILERS_ARRAY,mTrailers);
         super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        dataSource.close();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -229,11 +239,13 @@ public class DetailsFragment extends Fragment {
     }
 
     private void checkFav() {
-        movie=new ArrayList<>();
 
         //TODO 4: Fix with Realm
-        movie=SugarRecord.find(Movie.class,"m_id=?",id);
-        if(movie.size()==0)
+        Movie movie = new Movie();
+
+        movie = dataSource.findMovieByid(id);
+
+        if(movie==null)
         {
             Log.v(TAG,"Null");
 
