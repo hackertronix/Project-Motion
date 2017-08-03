@@ -22,6 +22,7 @@ import com.execube.genesis.model.Event;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.utils.API;
 import com.execube.genesis.utils.EventBus;
+import com.execube.genesis.utils.MoviesDataSource;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -40,6 +41,7 @@ public class FavouritesFragment extends Fragment {
     ArrayList<Movie> moviesArrayList;
     private FavouritesAdapter mAdapter;
     private TabLayout mTabLayout;
+    private MoviesDataSource dataSource;
 
     public FavouritesFragment() {
     }
@@ -47,6 +49,9 @@ public class FavouritesFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG,"Favourite OnCreate");
+
+        dataSource = new MoviesDataSource();
+        dataSource.open();
     }
 
 
@@ -63,13 +68,20 @@ public class FavouritesFragment extends Fragment {
         Log.v(TAG,"Favourite OnResume");
 
         //TODO 1: Fix with Realm
-        mMovies=Movie.listAll(Movie.class);
+
+
+        mMovies=dataSource.getAllMovies();
         mAdapter=new FavouritesAdapter();
         mFavouritesRecyclerView.setAdapter(mAdapter);
         mFavouritesRecyclerView.invalidate();
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        dataSource.close();
+    }
 
     @Override
     public void onPause() {
@@ -96,7 +108,7 @@ public class FavouritesFragment extends Fragment {
 
         else {
             //TODO 2: Fix with Realm
-            mMovies=  Movie.listAll(Movie.class);
+            mMovies=  dataSource.getAllMovies();
         }
 
 
@@ -194,7 +206,7 @@ public class FavouritesFragment extends Fragment {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 
         //TODO 3: Fix with Realm
-        mMovies=Movie.listAll(Movie.class);
+        mMovies=dataSource.getAllMovies();
         mAdapter=new FavouritesAdapter();
         mFavouritesRecyclerView.setAdapter(mAdapter);
         mFavouritesRecyclerView.invalidateItemDecorations();
