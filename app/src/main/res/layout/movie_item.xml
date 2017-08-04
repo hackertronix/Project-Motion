@@ -7,16 +7,15 @@
     <android.support.v7.widget.CardView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/poster_height"
+        android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="6dp"
-        android:layout_gravity="center_horizontal"
         app:cardElevation="12dp"
         android:transitionName="posterImage">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="152dp"
+            android:layout_height="238dp"
             android:elevation="7dp"
             android:scaleType="fitXY"
             android:src="@drawable/placeholder"

@@ -63,7 +63,7 @@ public class FavouritesFragment extends Fragment {
           so to refresh the recyclerview adapter I am reinitializing it*/
         super.onResume();
         EventBus.getBus().register(this);
-
+        dataSource.open();
 
         Log.v(TAG,"Favourite OnResume");
 

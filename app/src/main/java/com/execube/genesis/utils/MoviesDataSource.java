@@ -46,10 +46,32 @@ public class MoviesDataSource {
 
     public Movie findMovieByid(String id) {
 
+
+        int movie_id = Integer.parseInt(id);
         Movie movie = realm.where(Movie.class)
-                .equalTo("mId",id)
+                .equalTo("id",movie_id)
                 .findFirst();
 
         return movie;
     }
+
+    public void InsertMovieToDB(final Movie movie){
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.insertOrUpdate(movie);
+                Log.d(TAG, movie.getMovieId()+" was inserted");
+            }
+        });
+    }
+
+    public void deleteMovieFromDB(Movie movie){
+
+        realm.beginTransaction();
+        movie.deleteFromRealm();
+        realm.commitTransaction();
+    }
+
+
 }

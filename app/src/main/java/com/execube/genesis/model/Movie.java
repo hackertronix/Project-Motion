@@ -1,6 +1,5 @@
 package com.execube.genesis.model;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import io.realm.RealmObject;
@@ -12,7 +11,7 @@ import io.realm.annotations.PrimaryKey;
 public class Movie extends RealmObject implements Parcelable {
 
     @PrimaryKey
-    private int mId;
+    private int id;
 
 
     private String mOriginalTitle;
@@ -27,7 +26,7 @@ public class Movie extends RealmObject implements Parcelable {
 
     private Movie(Parcel source) {
 
-        mId=source.readInt();
+        id =source.readInt();
         mOriginalTitle=source.readString();
         mTitle=source.readString();
         mPosterPath=source.readString();
@@ -59,11 +58,11 @@ public class Movie extends RealmObject implements Parcelable {
     }
 
     public int getMovieId() {
-        return mId;
+        return id;
     }
 
     public void setMovieId(int id) {
-        mId = id;
+        this.id = id;
     }
 
     public String getOriginalTitle() {
@@ -123,7 +122,7 @@ public class Movie extends RealmObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mId);
+        dest.writeInt(id);
         dest.writeString(mOriginalTitle);
         dest.writeString(mTitle);
         dest.writeString(mPosterPath);

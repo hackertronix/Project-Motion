@@ -100,6 +100,8 @@ public class DetailsFragment extends Fragment {
 
     private String id;
     private boolean isFav;
+    private Movie movie;
+
     public DetailsFragment() {
 
     }
@@ -241,8 +243,8 @@ public class DetailsFragment extends Fragment {
     private void checkFav() {
 
         //TODO 4: Fix with Realm
-        Movie movie = new Movie();
 
+        movie = new Movie();
         movie = dataSource.findMovieByid(id);
 
         if(movie==null)
@@ -262,13 +264,10 @@ public class DetailsFragment extends Fragment {
             public void onClick(View v) {
 
                 //TODO 5: Fix with Realm
-             movie=SugarRecord.find(Movie.class,"m_id=?",id);
-                if(movie.size()>0)
+                movie = dataSource.findMovieByid(id);
+                if(movie!=null)
                 {
-                    entry = movie.get(0);
-
-                    //TODO 6: Inspect behaviour
-                    entry.delete();
+                    dataSource.deleteMovieFromDB(movie);
 
                     Event event = new Event("Database has been modified!!");
                     EventBus.getBus().post(event);
@@ -285,7 +284,8 @@ public class DetailsFragment extends Fragment {
                     entry = tempMovie;
 
                     ////TODO 6: Inspect Behaviour
-                    entry.save();
+
+                    dataSource.InsertMovieToDB(entry);
                     Event event = new Event("Database has been modified!!");
                     EventBus.getBus().post(event);
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_black_24dp);
