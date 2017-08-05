@@ -22,7 +22,7 @@ import com.execube.genesis.model.Event;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.utils.EventBus;
-import com.execube.genesis.utils.MoviesDataSource;
+import com.execube.genesis.database.MoviesDataSource;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 

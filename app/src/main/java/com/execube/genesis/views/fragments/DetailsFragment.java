@@ -35,7 +35,7 @@ import com.execube.genesis.model.Trailer;
 import com.execube.genesis.network.API;
 import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.utils.EventBus;
-import com.execube.genesis.utils.MoviesDataSource;
+import com.execube.genesis.database.MoviesDataSource;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

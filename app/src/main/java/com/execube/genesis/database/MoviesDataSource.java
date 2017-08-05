@@ -1,4 +1,4 @@
-package com.execube.genesis.utils;
+package com.execube.genesis.database;
 
 import android.util.Log;
 

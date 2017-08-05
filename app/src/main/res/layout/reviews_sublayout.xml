@@ -1,0 +1,56 @@
+<android.support.v7.widget.CardView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="20dp"
+    app:cardElevation="10dp"
+    app:cardCornerRadius="4dp"
+    android:id="@+id/reviews_card"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/reviews"
+            android:id="@+id/review_header"
+            android:layout_marginTop="10dp"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+
+        <ProgressBar
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:indeterminate="true"
+            android:layout_marginTop="40dp"
+            android:id="@+id/reviews_progressbar"
+            android:layout_gravity="center"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/review_header">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/review_recycler_view"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+        </ScrollView>
+
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
