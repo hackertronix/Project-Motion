@@ -15,8 +15,8 @@ import android.widget.ImageView;
 
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
-import com.execube.genesis.utils.API;
-import com.execube.genesis.utils.JSONParser;
+import com.execube.genesis.utils.AppConstants;
+import com.execube.genesis.network.JSONParser;
 import com.execube.genesis.utils.OkHttpHandler;
 import com.squareup.picasso.Picasso;
 
@@ -96,7 +96,7 @@ public class TopRatedMoviesFragment extends Fragment {
             Log.d(TAG, "onCreate: network call");
 
 
-            String url = API.BASE_URL+API.TOP_RATED+ API.API_KEY + API.SORT_R_RATED;
+            String url = AppConstants.BASE_URL+ AppConstants.TOP_RATED+ AppConstants.API_KEY + AppConstants.SORT_R_RATED;
             OkHttpHandler handler = new OkHttpHandler(url, apiCallback);
             handler.fetchData();//TODO use http caching
 
@@ -163,7 +163,7 @@ public class TopRatedMoviesFragment extends Fragment {
 
         public void bind(Movie movie) {
             mMovie=movie;
-            Picasso.with(getActivity()).load(API.IMAGE_URL + API.IMAGE_SIZE_500 + movie.getPosterPath())
+            Picasso.with(getActivity()).load(AppConstants.IMAGE_URL + AppConstants.IMAGE_SIZE_500 + movie.getPosterPath())
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.error)
                     .into(mPosterImage);

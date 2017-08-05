@@ -15,17 +15,17 @@ import android.widget.ImageView;
 
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
-import com.execube.genesis.utils.API;
-import com.execube.genesis.utils.JSONParser;
-import com.execube.genesis.utils.OkHttpHandler;
+import com.execube.genesis.model.TMDBResponse;
+import com.execube.genesis.network.API;
+import com.execube.genesis.utils.AppConstants;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 /**
  * Created by Prateek Phoenix on 4/24/2016.
@@ -64,10 +64,10 @@ public class PopularMoviesFragment extends Fragment {
 
            Log.d(TAG, "Popular onCreate: network call");
 
+            fetchData();
 
-            String url = API.BASE_URL+API.POPULAR+API.API_KEY+API.SORT_POPULARITY;
-            OkHttpHandler handler= new OkHttpHandler(url, apiCallback);
-            handler.fetchData();
+
+
         }
 
 
@@ -90,6 +90,28 @@ public class PopularMoviesFragment extends Fragment {
         mAdapter = new PopularMoviesAdapter();
         popularMoviesList.setAdapter(mAdapter);
         return content;
+    }
+
+    private void fetchData() {
+
+        API moviesAPI = API.retrofit.create(API.class);
+
+        Call<TMDBResponse> call = moviesAPI.fetchPopularMovies(AppConstants.API_KEY,AppConstants.SORT_POPULARITY,1);
+
+        call.enqueue(new Callback<TMDBResponse>() {
+            @Override
+            public void onResponse(Call<TMDBResponse> call, Response<TMDBResponse> response) {
+                TMDBResponse result = response.body();
+                mMovies = (ArrayList<Movie>) result.getResults();
+                progressBarPopular.setVisibility(View.GONE);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<TMDBResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
@@ -120,7 +142,7 @@ public class PopularMoviesFragment extends Fragment {
 
     }
 
-
+/*
     private Callback apiCallback =  new Callback() {
         @Override
         public void onFailure(Call call, IOException e) {
@@ -128,7 +150,7 @@ public class PopularMoviesFragment extends Fragment {
         }
 
         @Override
-        public void onResponse(Call call, Response response) throws IOException {
+        public void onResponse(Call call, TMDBResponse response) throws IOException {
             try {
                 JSONParser parser= new JSONParser();
                 String newtworkResponse= response.body().string();
@@ -146,7 +168,7 @@ public class PopularMoviesFragment extends Fragment {
                 }
             });
         }
-    };
+    };*/
 
     private class PopularMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -155,7 +177,7 @@ public class PopularMoviesFragment extends Fragment {
 
         public PopularMoviesViewHolder(View itemView) {
             super(itemView);
-            mPosterImage= (ImageView)itemView.findViewById(R.id.poster);
+            mPosterImage= itemView.findViewById(R.id.poster);
             itemView.setOnClickListener(this);
         }
 
@@ -163,7 +185,7 @@ public class PopularMoviesFragment extends Fragment {
         public void bind(Movie movie) {
 
             mMovie=movie;
-            Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_500 +movie.getPosterPath())
+            Picasso.with(getActivity()).load(AppConstants.IMAGE_URL+ AppConstants.IMAGE_SIZE_500 +movie.getPosterPath())
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.error)
                     .into(mPosterImage);

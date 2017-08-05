@@ -79,7 +79,7 @@
                            android:elevation="10dp"
                            android:layout_below="@+id/release_date"
                            android:layout_margin="10dp"
-                           android:isIndicator="true"
+                           android:isIndicator="false"
                            android:layout_centerHorizontal="true"
                            android:rating="3.5"/>
 

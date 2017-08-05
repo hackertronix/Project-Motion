@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.execube.genesis.R;
 import com.execube.genesis.model.Event;
 import com.execube.genesis.model.Movie;
-import com.execube.genesis.utils.API;
+import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.utils.EventBus;
 import com.execube.genesis.utils.MoviesDataSource;
 import com.squareup.otto.Subscribe;
@@ -142,7 +142,7 @@ public class FavouritesFragment extends Fragment {
         public void bind(Movie movie)
         {
             mMovie=movie;
-            Picasso.with(getActivity()).load(API.IMAGE_URL+API.IMAGE_SIZE_500+mMovie.getPosterPath())
+            Picasso.with(getActivity()).load(AppConstants.IMAGE_URL+ AppConstants.IMAGE_SIZE_500+mMovie.getPosterPath())
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.error)
                     .into(mPosterImageView);

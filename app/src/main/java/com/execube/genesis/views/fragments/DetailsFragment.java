@@ -12,7 +12,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,16 +24,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.execube.genesis.R;
 import com.execube.genesis.model.Event;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.Review;
 import com.execube.genesis.model.Trailer;
-import com.execube.genesis.utils.API;
+import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.utils.EventBus;
-import com.execube.genesis.utils.JSONParser;
+import com.execube.genesis.network.JSONParser;
 import com.execube.genesis.utils.MoviesDataSource;
 import com.execube.genesis.utils.OkHttpHandler;import com.squareup.picasso.Picasso;
 
@@ -47,8 +45,6 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Response;
-
-import static com.execube.genesis.R.drawable.ic_favorite_black_24dp;
 
 
 /**
@@ -170,8 +166,8 @@ public class DetailsFragment extends Fragment {
 
         //PREPPING THE URL FOR QUERY
 
-        String reviewQueryUrl = API.MOVIES_BASE_URL + id + "/reviews" + API.API_KEY;
-        String trailerQueryUrl = API.MOVIES_BASE_URL + id + "/videos" + API.API_KEY;
+        String reviewQueryUrl = AppConstants.MOVIES_BASE_URL + id + "/reviews" + AppConstants.API_KEY;
+        String trailerQueryUrl = AppConstants.MOVIES_BASE_URL + id + "/videos" + AppConstants.API_KEY;
 
 
 
@@ -218,7 +214,7 @@ public class DetailsFragment extends Fragment {
 
         }
 
-        Picasso.with(getActivity()).load(API.IMAGE_URL + API.IMAGE_SIZE_500 + mMovie.getPosterPath())
+        Picasso.with(getActivity()).load(AppConstants.IMAGE_URL + AppConstants.IMAGE_SIZE_500 + mMovie.getPosterPath())
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(mBackdrop);
@@ -448,7 +444,7 @@ public class DetailsFragment extends Fragment {
         {
             mTrailer=trailer;
 
-            Picasso.with(getActivity()).load(API.YOUTUBE_THUMBNAIL_URL+mTrailer.getKey()+API.THUMBNAIL_QUALITY)
+            Picasso.with(getActivity()).load(AppConstants.YOUTUBE_THUMBNAIL_URL+mTrailer.getKey()+ AppConstants.THUMBNAIL_QUALITY)
                     .placeholder(R.drawable.trailer_thumbnail_placeholder).into(mTrailerThumbnail);
 
         }
@@ -456,7 +452,7 @@ public class DetailsFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(API.YOUTUBE_TRAILER_URL+mTrailer.getKey()));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppConstants.YOUTUBE_TRAILER_URL+mTrailer.getKey()));
             startActivity(intent);
 
         }

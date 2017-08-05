@@ -1,4 +1,4 @@
-package com.execube.genesis.utils;
+package com.execube.genesis.network;
 
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.Review;

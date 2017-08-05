@@ -2,6 +2,9 @@ package com.execube.genesis.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -11,17 +14,31 @@ import io.realm.annotations.PrimaryKey;
 public class Movie extends RealmObject implements Parcelable {
 
     @PrimaryKey
+    @SerializedName("id")
     private int id;
 
 
+    @SerializedName("original_title")
     private String mOriginalTitle;
+
+    @SerializedName("title")
     private String mTitle;
+
+    @SerializedName("poster_path")
     private String mPosterPath;
+
+    @SerializedName("overview")
     private String mOverview;
+
+    @SerializedName("vote_average")
     private float mVoteAverage;
+
+    @SerializedName("backdrop_path")
     private String mBackdropPath;
+
+    @SerializedName("release_date")
     private String mReleaseDate;
-    private boolean isFavourite = false;
+
 
 
     private Movie(Parcel source) {
@@ -39,14 +56,6 @@ public class Movie extends RealmObject implements Parcelable {
 
     public Movie() {
 
-    }
-
-    public boolean getFavourite() {
-        return isFavourite;
-    }
-
-    public void setFavourite(boolean favourite) {
-        isFavourite = favourite;
     }
 
     public String getReleaseDate() {
