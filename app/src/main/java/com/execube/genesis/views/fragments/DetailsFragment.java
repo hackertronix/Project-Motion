@@ -26,6 +26,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.execube.genesis.R;
+import com.execube.genesis.adapters.ReviewsAdapter;
+import com.execube.genesis.adapters.TrailersAdapter;
 import com.execube.genesis.model.Event;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.Review;
@@ -71,8 +73,8 @@ public class DetailsFragment extends Fragment {
 
     private RatingBar mRatingBar;
 
-    private ArrayList<Review> mReviews=new ArrayList<>();
-    private ArrayList<Trailer> mTrailers=new ArrayList<>();
+    private ArrayList<Review> mReviews;
+    private ArrayList<Trailer> mTrailers;
     private List<Movie> updatedFavsList= new ArrayList<>();
 
     public static final String MOVIE_REVIEWS_ARRAY ="movie_details";
@@ -151,7 +153,6 @@ public class DetailsFragment extends Fragment {
 
         assert mMovie != null;
 
-        //PREPPING THE URL FOR QUERY
 
 
 
@@ -182,37 +183,50 @@ public class DetailsFragment extends Fragment {
             mReviews=savedInstanceState.getParcelableArrayList(MOVIE_REVIEWS_ARRAY);
             mTrailers=savedInstanceState.getParcelableArrayList(MOVIE_TRAILERS_ARRAY);
 
+            mReviewAdapter.notifyDataSetChanged();
+            mTrailerAdapter.notifyDataSetChanged();
+
             mReviewsProgressbar.setVisibility(GONE);
             mTrailersProgressbar.setVisibility(GONE);
 
         }
-
-        else {
-
+        if( mTrailers == null || mReviews == null)
+        {
             fetchTrailers();
             fetchReviews();
+
+        }
+        else {
+
+            setupReviewRecyclerView();
+            setupTrailersRecyclerView();
         }
 
         Picasso.with(getActivity()).load(AppConstants.IMAGE_URL + AppConstants.IMAGE_SIZE_500 + mMovie.getPosterPath())
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(mBackdrop);
+
         getActivity().startPostponedEnterTransition();
 
 
+        return view;
+    }
 
-
-
-        mReviewRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mReviewAdapter= new ReviewsAdapter();
-        mReviewRecyclerView.setAdapter(mReviewAdapter);
-
+    private void setupTrailersRecyclerView() {
         LinearLayoutManager layoutmanager= new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         mTrailerRecyclerView.setLayoutManager(layoutmanager);
-        mTrailerAdapter= new TrailersAdapter();
+        mTrailerAdapter= new TrailersAdapter(mTrailers,getActivity());
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
+    }
 
-        return view;
+    private void setupReviewRecyclerView() {
+
+        mReviewRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mReviewAdapter= new ReviewsAdapter(mReviews,getActivity());
+        mReviewRecyclerView.setAdapter(mReviewAdapter);
+
+
     }
 
 
@@ -225,9 +239,10 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroyView() {
+        super.onDestroyView();
         dataSource.close();
+
     }
 
     private void fetchReviews() {
@@ -248,6 +263,7 @@ public class DetailsFragment extends Fragment {
                 }
 
                 mReviewsProgressbar.setVisibility(GONE);
+                setupReviewRecyclerView();
                 mReviewAdapter.notifyDataSetChanged();
             }
 
@@ -272,6 +288,7 @@ public class DetailsFragment extends Fragment {
                 mTrailers = (ArrayList<Trailer>) result.getResults();
 
                 mTrailersProgressbar.setVisibility(GONE);
+                setupTrailersRecyclerView();
                 mTrailerAdapter.notifyDataSetChanged();
             }
 
@@ -341,110 +358,6 @@ public class DetailsFragment extends Fragment {
 
             }
         });
-    }
-
-
-
-    private class ReviewViewHolder extends RecyclerView.ViewHolder{
-        private TextView mAuthorText;
-        private TextView mReviewText;
-        private Review mReview;
-
-        public ReviewViewHolder(View itemView) {
-            super(itemView);
-            mAuthorText= itemView.findViewById(R.id.author_textview);
-            mReviewText= itemView.findViewById(R.id.review_textview);
-
-        }
-
-        public void bind(Review review)
-        {
-            mReview= review;
-
-            mAuthorText.setText(mReview.getAuthor());
-            mReviewText.setText(mReview.getContent());
-
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP)
-            {
-                mAuthorText.setTypeface(fontBold);
-                mReviewText.setTypeface(fontMediumLight);
-            }
-
-
-        }
-    }
-
-    private class ReviewsAdapter extends RecyclerView.Adapter<ReviewViewHolder>{
-
-        @Override
-        public ReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view= LayoutInflater.from(getActivity()).inflate(R.layout.review_item,parent,false);
-            return new ReviewViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(ReviewViewHolder holder, int position) {
-            Review review= mReviews.get(position);
-            holder.bind(review);
-        }
-
-        @Override
-        public int getItemCount() {
-            if(mReviews==null)
-            { return 0;}
-            else
-            {return mReviews.size();}
-        }
-    }
-
-    private class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView mTrailerThumbnail;
-        private Trailer mTrailer;
-
-        public TrailerViewHolder(View itemView) {
-            super(itemView);
-
-            mTrailerThumbnail= itemView.findViewById(R.id.trailer_thumbnail);
-            itemView.setOnClickListener(this);
-        }
-
-        public void bind(Trailer trailer)
-        {
-            mTrailer=trailer;
-
-            Picasso.with(getActivity()).load(AppConstants.YOUTUBE_THUMBNAIL_URL+mTrailer.getKey()+ AppConstants.THUMBNAIL_QUALITY)
-                    .placeholder(R.drawable.trailer_thumbnail_placeholder).into(mTrailerThumbnail);
-
-        }
-
-        @Override
-        public void onClick(View v) {
-
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(AppConstants.YOUTUBE_TRAILER_URL+mTrailer.getKey()));
-            startActivity(intent);
-
-        }
-    }
-
-    private class TrailersAdapter extends RecyclerView.Adapter<TrailerViewHolder>
-    {
-
-        @Override
-        public TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view= LayoutInflater.from(getActivity()).inflate(R.layout.trailer_item,parent,false);
-            return new TrailerViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(TrailerViewHolder holder, int position) {
-            Trailer trailer= mTrailers.get(position);
-            holder.bind(trailer);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mTrailers.size();
-        }
     }
 
 }

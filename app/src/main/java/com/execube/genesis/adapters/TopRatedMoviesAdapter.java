@@ -1,7 +1,9 @@
 package com.execube.genesis.adapters;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +75,8 @@ public class TopRatedMoviesAdapter extends RecyclerView.Adapter<TopRatedMoviesAd
                     .into(mPosterImage);
         }
 
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onClick(View v) {
 

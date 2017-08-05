@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.execube.genesis.R;
 import com.execube.genesis.adapters.TopRatedMoviesAdapter;
@@ -19,7 +18,6 @@ import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.TMDBResponse;
 import com.execube.genesis.network.API;
 import com.execube.genesis.utils.AppConstants;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 

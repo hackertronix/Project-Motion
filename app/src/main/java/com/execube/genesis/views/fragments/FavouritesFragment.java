@@ -1,9 +1,7 @@
 package com.execube.genesis.views.fragments;
 
-import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -14,17 +12,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.execube.genesis.R;
+import com.execube.genesis.adapters.FavouritesAdapter;
 import com.execube.genesis.model.Event;
 import com.execube.genesis.model.Movie;
-import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.utils.EventBus;
 import com.execube.genesis.database.MoviesDataSource;
 import com.squareup.otto.Subscribe;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +63,7 @@ public class FavouritesFragment extends Fragment {
 
 
         mMovies=dataSource.getAllMovies();
-        mAdapter=new FavouritesAdapter();
+        mAdapter=new FavouritesAdapter((ArrayList<Movie>) mMovies,getActivity());
         mFavouritesRecyclerView.setAdapter(mAdapter);
         mFavouritesRecyclerView.invalidate();
 
@@ -122,7 +118,7 @@ public class FavouritesFragment extends Fragment {
         else{
             mFavouritesRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         }
-        mAdapter= new FavouritesAdapter();
+        mAdapter= new FavouritesAdapter((ArrayList<Movie>) mMovies,getActivity());
         mFavouritesRecyclerView.setAdapter(mAdapter);
         mFavouritesRecyclerView.invalidate();
         return view;
@@ -130,33 +126,7 @@ public class FavouritesFragment extends Fragment {
 
 
 
-    private class FavouritesHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
-        private ImageView mPosterImageView;
-        private Movie mMovie;
-        public FavouritesHolder(View itemView) {
-            super(itemView);
-            mPosterImageView=(ImageView)itemView.findViewById(R.id.poster);
-            itemView.setOnClickListener(this);
-        }
 
-        public void bind(Movie movie)
-        {
-            mMovie=movie;
-            Picasso.with(getActivity()).load(AppConstants.IMAGE_URL+ AppConstants.IMAGE_SIZE_500+mMovie.getPosterPath())
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.error)
-                    .into(mPosterImageView);
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onClick(View v) {
-
-            ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(getActivity(),mPosterImageView,"posterImage");
-            ((openDetailsListener)getActivity()).openDetails(mMovie,options);
-        }
-    }
 
 
 
@@ -168,28 +138,7 @@ public class FavouritesFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    private class FavouritesAdapter extends RecyclerView.Adapter<FavouritesHolder>
-    {
 
-
-        @Override
-        public FavouritesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view= LayoutInflater.from(getActivity()).inflate(R.layout.movie_item,parent,false);
-            return new FavouritesHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(FavouritesHolder holder, int position) {
-
-            Movie movie= mMovies.get(position);
-            holder.bind(movie);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mMovies.size();
-        }
-    }
 
 
     public interface openDetailsListener{
@@ -208,7 +157,7 @@ public class FavouritesFragment extends Fragment {
 
         //TODO 3: Fix with Realm
         mMovies=dataSource.getAllMovies();
-        mAdapter=new FavouritesAdapter();
+        mAdapter=new FavouritesAdapter((ArrayList<Movie>) mMovies,getActivity());
         mFavouritesRecyclerView.setAdapter(mAdapter);
         mFavouritesRecyclerView.invalidateItemDecorations();
     }
