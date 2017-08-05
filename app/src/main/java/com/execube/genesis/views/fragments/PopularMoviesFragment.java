@@ -142,34 +142,6 @@ public class PopularMoviesFragment extends Fragment {
 
     }
 
-/*
-    private Callback apiCallback =  new Callback() {
-        @Override
-        public void onFailure(Call call, IOException e) {
-            //TODO show error message from here but in UI thread
-        }
-
-        @Override
-        public void onResponse(Call call, TMDBResponse response) throws IOException {
-            try {
-                JSONParser parser= new JSONParser();
-                String newtworkResponse= response.body().string();
-                mMovies= parser.parseMovies(newtworkResponse);
-
-            } catch (Exception e) { Log.v(TAG, "Exception caught: ", e);
-            }
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBarPopular.setVisibility(View.GONE);
-                    mAdapter.notifyDataSetChanged();
-
-
-                }
-            });
-        }
-    };*/
-
     private class PopularMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private ImageView mPosterImage;

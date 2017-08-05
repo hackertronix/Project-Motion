@@ -18,7 +18,8 @@ public interface API {
     @GET(AppConstants.POPULAR)
     Call<TMDBResponse> fetchPopularMovies(@Query("api_key") String API_KEY, @Query("sort_by") String SORT_BY, @Query("page") int page);
 
-
+    @GET(AppConstants.TOP_RATED)
+    Call<TMDBResponse> fetchTopRatedMovies(@Query("api_key") String API_KEY, @Query("sort_by") String SORT_BY, @Query("page") int page);
 
 
     public static Retrofit retrofit = new Retrofit.Builder()

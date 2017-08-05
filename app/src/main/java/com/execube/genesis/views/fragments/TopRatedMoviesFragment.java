@@ -15,6 +15,8 @@ import android.widget.ImageView;
 
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
+import com.execube.genesis.model.TMDBResponse;
+import com.execube.genesis.network.API;
 import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.network.JSONParser;
 import com.execube.genesis.utils.OkHttpHandler;
@@ -23,9 +25,12 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.view.View.GONE;
+
 
 /**
  * Created by Prateek Phoenix on 4/24/2016.
@@ -95,10 +100,8 @@ public class TopRatedMoviesFragment extends Fragment {
         else{
             Log.d(TAG, "onCreate: network call");
 
+            fetchData();
 
-            String url = AppConstants.BASE_URL+ AppConstants.TOP_RATED+ AppConstants.API_KEY + AppConstants.SORT_R_RATED;
-            OkHttpHandler handler = new OkHttpHandler(url, apiCallback);
-            handler.fetchData();//TODO use http caching
 
         }
 
@@ -106,7 +109,7 @@ public class TopRatedMoviesFragment extends Fragment {
 
         if(savedInstanceState!=null)
         {
-            progressBarTopRated.setVisibility(View.GONE);
+            progressBarTopRated.setVisibility(GONE);
         }
 
 // CHECKING FOR DEVICE ORIENTATION TO SET NUMBER OF GRID VIEW COLUMNS
@@ -125,29 +128,28 @@ public class TopRatedMoviesFragment extends Fragment {
         return content;
     }
 
-    private Callback apiCallback = new Callback() {
-        @Override
-        public void onFailure(Call call, IOException e) {
-            Log.e(TAG, "onFailure: " + e.getMessage());
-        }
+    private void fetchData() {
 
-        @Override
-        public void onResponse(Call call, Response response) throws IOException {
-            try {
-                JSONParser parser= new JSONParser();
-                mMovies = parser.parseMovies(response.body().string());
-            } catch (Exception e) {
-                Log.v(TAG, "Exception caught: ", e);
+        API moviesAPI = API.retrofit.create(API.class);
+        Call<TMDBResponse> call = moviesAPI.fetchTopRatedMovies(AppConstants.API_KEY,AppConstants.SORT_R_RATED,1);
+
+        call.enqueue(new Callback<TMDBResponse>() {
+            @Override
+            public void onResponse(Call<TMDBResponse> call, Response<TMDBResponse> response) {
+                TMDBResponse result = response.body();
+                mMovies = (ArrayList<Movie>) result.getResults();
+                progressBarTopRated.setVisibility(GONE);
+                mAdapter.notifyDataSetChanged();
             }
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBarTopRated.setVisibility(View.GONE);
-                    mAdapter.notifyDataSetChanged();
-                }
-            });
-        }
-    };
+
+            @Override
+            public void onFailure(Call<TMDBResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
 
     private class TopRatedMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
