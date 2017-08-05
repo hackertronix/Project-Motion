@@ -3,14 +3,21 @@ package com.execube.genesis.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Prateek Phoenix on 5/22/2016.
  */
 public class Review implements Parcelable{
 
 
+    @SerializedName("id")
     private String mId;
+
+    @SerializedName("author")
     private String mAuthor;
+
+    @SerializedName("content")
     private String mContent;
 
 

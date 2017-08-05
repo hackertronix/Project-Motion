@@ -29,22 +29,23 @@ import com.execube.genesis.R;
 import com.execube.genesis.model.Event;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.Review;
+import com.execube.genesis.model.TMBDReviews;
+import com.execube.genesis.model.TMDBTrailers;
 import com.execube.genesis.model.Trailer;
+import com.execube.genesis.network.API;
 import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.utils.EventBus;
-import com.execube.genesis.network.JSONParser;
 import com.execube.genesis.utils.MoviesDataSource;
-import com.execube.genesis.utils.OkHttpHandler;import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.view.View.GONE;
 
 
 /**
@@ -94,7 +95,7 @@ public class DetailsFragment extends Fragment {
     private TrailersAdapter mTrailerAdapter;
     private MoviesDataSource dataSource;
 
-    private String id;
+    private int id;
     private boolean isFav;
     private Movie movie;
 
@@ -156,7 +157,7 @@ public class DetailsFragment extends Fragment {
         Bundle bundle=getArguments();
         mMovie=bundle.getParcelable("PARCEL");
         tempMovie=mMovie;
-        id = String.valueOf(mMovie.getMovieId());
+        id = mMovie.getMovieId();
 
 
         checkFav();
@@ -165,9 +166,6 @@ public class DetailsFragment extends Fragment {
         assert mMovie != null;
 
         //PREPPING THE URL FOR QUERY
-
-        String reviewQueryUrl = AppConstants.MOVIES_BASE_URL + id + "/reviews" + AppConstants.API_KEY;
-        String trailerQueryUrl = AppConstants.MOVIES_BASE_URL + id + "/videos" + AppConstants.API_KEY;
 
 
 
@@ -192,26 +190,21 @@ public class DetailsFragment extends Fragment {
         }
 
 
-
-        //FETCHING JSON HERE
         if(savedInstanceState!=null&&savedInstanceState.containsKey(MOVIE_REVIEWS_ARRAY))
         {
             Log.v(TAG,"Restoring from bundle");
             mReviews=savedInstanceState.getParcelableArrayList(MOVIE_REVIEWS_ARRAY);
             mTrailers=savedInstanceState.getParcelableArrayList(MOVIE_TRAILERS_ARRAY);
 
-            mReviewsProgressbar.setVisibility(View.GONE);
-            mTrailersProgressbar.setVisibility(View.GONE);
+            mReviewsProgressbar.setVisibility(GONE);
+            mTrailersProgressbar.setVisibility(GONE);
 
         }
 
         else {
-            OkHttpHandler reviewsHandler = new OkHttpHandler(reviewQueryUrl, reviewsCallback);
-            reviewsHandler.fetchData();
 
-            OkHttpHandler trailersHandler= new OkHttpHandler(trailerQueryUrl, trailersCallback);
-            trailersHandler.fetchData();
-
+            fetchTrailers();
+            fetchReviews();
         }
 
         Picasso.with(getActivity()).load(AppConstants.IMAGE_URL + AppConstants.IMAGE_SIZE_500 + mMovie.getPosterPath())
@@ -236,12 +229,65 @@ public class DetailsFragment extends Fragment {
         return view;
     }
 
+    private void fetchReviews() {
+
+        API reviewsAPI = API.retrofit.create(API.class);
+
+        retrofit2.Call<TMBDReviews> call = reviewsAPI.fetchReviews(id,AppConstants.API_KEY);
+        call.enqueue(new Callback<TMBDReviews>() {
+            @Override
+            public void onResponse(Call<TMBDReviews> call, Response<TMBDReviews> response) {
+                TMBDReviews result = response.body();
+                mReviews = (ArrayList<Review>) result.getResults();
+                NumOfReviews = result.getTotal_results();
+
+                if(NumOfReviews == 0)
+                {
+                    mReviewsCardView.setVisibility(GONE);
+                }
+
+                mReviewsProgressbar.setVisibility(GONE);
+                mReviewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<TMBDReviews> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+    private void fetchTrailers() {
+
+
+        API trailersAPI = API.retrofit.create(API.class);
+        Call<TMDBTrailers> call = trailersAPI.fetchTrailers(id,AppConstants.API_KEY);
+        call.enqueue(new Callback<TMDBTrailers>() {
+            @Override
+            public void onResponse(Call<TMDBTrailers> call, Response<TMDBTrailers> response) {
+                TMDBTrailers result = response.body();
+                mTrailers = (ArrayList<Trailer>) result.getResults();
+
+                mTrailersProgressbar.setVisibility(GONE);
+                mTrailerAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<TMDBTrailers> call, Throwable t) {
+
+            }
+        });
+
+    }
+
     private void checkFav() {
 
         //TODO 4: Fix with Realm
 
         movie = new Movie();
-        movie = dataSource.findMovieByid(id);
+        movie = dataSource.findMovieByid(String.valueOf(id));
 
         if(movie==null)
         {
@@ -260,7 +306,7 @@ public class DetailsFragment extends Fragment {
             public void onClick(View v) {
 
                 //TODO 5: Fix with Realm
-                movie = dataSource.findMovieByid(id);
+                movie = dataSource.findMovieByid(String.valueOf(id));
                 if(movie!=null)
                 {
                     dataSource.deleteMovieFromDB(movie);
@@ -297,85 +343,6 @@ public class DetailsFragment extends Fragment {
     }
 
 
-    //OKHTTP CALLBACK FOR NETWORK CALL
-    private okhttp3.Callback reviewsCallback = new okhttp3.Callback() {
-        @Override
-        public void onFailure(Call call, IOException e) {
-            //TODO handle failure on UI thread
-        }
-
-        @Override
-        public void onResponse(Call call, Response response) throws IOException {
-
-            try {
-                String JSONData= response.body().string();
-                JSONObject jsonObject = new JSONObject(JSONData);
-                NumOfReviews = jsonObject.getInt("total_results");
-                JSONParser parser = new JSONParser();
-                mReviews=parser.parseReviews(JSONData);
-
-
-
-            } catch (JSONException e) {}
-
-           if(getActivity()!=null)
-           {
-               getActivity().runOnUiThread(new Runnable() {
-                   @Override //THIS IS THE FIRST LINE WHERE I GET A NULL POINTER EXCEPTION
-                   public void run() {
-
-                       if(mReviewAdapter!=null)
-                       {
-                           mReviewsProgressbar.setVisibility(View.GONE);
-                           mReviewAdapter.notifyDataSetChanged();
-                       }
-                   }
-               });
-
-               getActivity().runOnUiThread(new Runnable() {
-                   @Override
-                   public void run() {
-                       if (NumOfReviews==0)
-                       {
-                           mReviewsCardView.setVisibility(View.INVISIBLE);
-                       }
-                   }
-               });
-           }
-        }
-    };
-
-    private okhttp3.Callback trailersCallback = new okhttp3.Callback() {
-        @Override
-        public void onFailure(Call call, IOException e) {
-            //TODO handle failure on UI thread
-        }
-
-        @Override
-        public void onResponse(Call call, Response response) throws IOException {
-
-            try {
-                String json1= response.body().string();
-                JSONParser parser= new JSONParser();
-                mTrailers = parser.parseTrailers(json1);
-
-            } catch (JSONException e) {}
-
-           if(getActivity()!=null)
-           {
-               getActivity().runOnUiThread(new Runnable() {
-                   @Override
-                   public void run() {  //THIS IS THE 2nd LINE WHERE I GET A NULL POINTER EXCEPTION
-                       if(mTrailerAdapter!=null)
-                       {
-                           mTrailersProgressbar.setVisibility(View.GONE);
-                           mTrailerAdapter.notifyDataSetChanged();
-                       }
-                   }
-               });
-           }
-        }
-    };
 
     private class ReviewViewHolder extends RecyclerView.ViewHolder{
         private TextView mAuthorText;

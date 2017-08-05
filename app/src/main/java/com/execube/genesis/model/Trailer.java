@@ -3,13 +3,20 @@ package com.execube.genesis.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Prateek Phoenix on 5/22/2016.
  */
 public class Trailer implements Parcelable{
 
+    @SerializedName("id")
     public String mId;
+
+    @SerializedName("key")
     public String mKey;
+
+    @SerializedName("name")
     public String mName;
 
     private Trailer(Parcel source)

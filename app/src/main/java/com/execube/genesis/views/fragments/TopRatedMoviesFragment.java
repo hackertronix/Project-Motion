@@ -18,11 +18,8 @@ import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.TMDBResponse;
 import com.execube.genesis.network.API;
 import com.execube.genesis.utils.AppConstants;
-import com.execube.genesis.network.JSONParser;
-import com.execube.genesis.utils.OkHttpHandler;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -85,7 +82,7 @@ public class TopRatedMoviesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.fragment_top_rated_movies, container, false);
-        topRatedMoviesList = (RecyclerView) content.findViewById(R.id.top_rated_recyclerView);
+        topRatedMoviesList = content.findViewById(R.id.top_rated_recyclerView);
         progressBarTopRated = content.findViewById(R.id.progressBar_top_rated);
 
 
@@ -112,7 +109,7 @@ public class TopRatedMoviesFragment extends Fragment {
             progressBarTopRated.setVisibility(GONE);
         }
 
-// CHECKING FOR DEVICE ORIENTATION TO SET NUMBER OF GRID VIEW COLUMNS
+        // CHECKING FOR DEVICE ORIENTATION TO SET NUMBER OF GRID VIEW COLUMNS
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 
             topRatedMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
@@ -159,7 +156,7 @@ public class TopRatedMoviesFragment extends Fragment {
         public TopRatedMoviesViewHolder(View itemView) {
             super(itemView);
 
-            mPosterImage = (ImageView) itemView.findViewById(R.id.poster);
+            mPosterImage = itemView.findViewById(R.id.poster);
             itemView.setOnClickListener(this);
         }
 
