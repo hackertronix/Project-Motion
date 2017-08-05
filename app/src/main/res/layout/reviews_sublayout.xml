@@ -5,6 +5,7 @@
     android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:layout_marginTop="20dp"
     app:cardElevation="10dp"
+    android:layout_marginBottom="20dp"
     app:cardCornerRadius="4dp"
     android:id="@+id/reviews_card"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -32,6 +33,7 @@
             android:layout_height="40dp"
             android:indeterminate="true"
             android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
             android:id="@+id/reviews_progressbar"
             android:layout_gravity="center"/>
 

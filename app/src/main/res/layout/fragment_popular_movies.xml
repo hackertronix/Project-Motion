@@ -13,6 +13,7 @@
     <!--fixme this was up top-->
     <ProgressBar
         android:id="@+id/progressBar_popular"
+        android:visibility="gone"
         android:indeterminate="true"
         android:layout_width="40dp"
         android:layout_height="40dp"

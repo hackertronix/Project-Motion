@@ -50,8 +50,6 @@ public class FavouritesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.v(TAG,"Favourite OnCreate");
 
-        dataSource = new MoviesDataSource();
-        dataSource.open();
     }
 
 
@@ -63,8 +61,6 @@ public class FavouritesFragment extends Fragment {
           so to refresh the recyclerview adapter I am reinitializing it*/
         super.onResume();
         EventBus.getBus().register(this);
-        dataSource.open();
-
         Log.v(TAG,"Favourite OnResume");
 
         //TODO 1: Fix with Realm
@@ -78,9 +74,10 @@ public class FavouritesFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroyView() {
+        super.onDestroyView();
         dataSource.close();
+
     }
 
     @Override
@@ -99,6 +96,10 @@ public class FavouritesFragment extends Fragment {
         Log.v(TAG,"In OnCreateView()");
         View view = inflater.inflate(R.layout.fragment_favourites,container,false);
         mFavouritesRecyclerView=(RecyclerView)view.findViewById(R.id.favourites_recyclerview);
+
+
+        dataSource = new MoviesDataSource();
+        dataSource.open();
 
         if(savedInstanceState!=null&&savedInstanceState.containsKey(FAVOURITE_MOVIES_ARRAY))
         {

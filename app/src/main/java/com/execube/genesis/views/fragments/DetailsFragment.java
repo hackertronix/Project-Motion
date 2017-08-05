@@ -106,23 +106,7 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dataSource = new MoviesDataSource();
-        dataSource.open();
-    }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        Log.v(TAG,"Saving state in onSaveInstanceState");
-        outState.putParcelableArrayList(MOVIE_REVIEWS_ARRAY,mReviews);
-        outState.putParcelableArrayList(MOVIE_TRAILERS_ARRAY,mTrailers);
-        super.onSaveInstanceState(outState);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        dataSource.close();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -131,6 +115,8 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
+        dataSource = new MoviesDataSource();
+        dataSource.open();
 
         mBackdrop = view.findViewById(R.id.details_poster);
 
@@ -227,6 +213,21 @@ public class DetailsFragment extends Fragment {
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
 
         return view;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.v(TAG,"Saving state in onSaveInstanceState");
+        outState.putParcelableArrayList(MOVIE_REVIEWS_ARRAY,mReviews);
+        outState.putParcelableArrayList(MOVIE_TRAILERS_ARRAY,mTrailers);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        dataSource.close();
     }
 
     private void fetchReviews() {

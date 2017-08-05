@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.execube.genesis.R;
+import com.execube.genesis.adapters.PopularMoviesAdapter;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.TMDBResponse;
 import com.execube.genesis.network.API;
@@ -50,28 +51,31 @@ public class PopularMoviesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View content = inflater.inflate(R.layout.fragment_popular_movies,container,false);
-        popularMoviesList = (RecyclerView) content.findViewById(R.id.popular_recyclerView);
+
+
+        popularMoviesList = content.findViewById(R.id.popular_recyclerView);
         progressBarPopular = content.findViewById(R.id.progressBar_popular);
         deviceIsTablet= getResources().getBoolean(R.bool.is_tablet);
+
 
         if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
         {
             mMovies=savedInstanceState.getParcelableArrayList(POPULAR_MOVIES_ARRAY);
          Log.d(TAG, "Popular onCreate: restoring " + mMovies.size());
-        }
-        else {
 
-           Log.d(TAG, "Popular onCreate: network call");
+        }
+
+
+        if ( mMovies == null ) {
 
             fetchData();
 
+        } else {
 
-
+            setupRecyclerView();
         }
-
-
-
 
         if (savedInstanceState != null) {
             progressBarPopular.setVisibility(View.GONE);
@@ -86,13 +90,19 @@ public class PopularMoviesFragment extends Fragment {
             popularMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         }
 
-
-        mAdapter = new PopularMoviesAdapter();
-        popularMoviesList.setAdapter(mAdapter);
+        setupRecyclerView();
         return content;
     }
 
+    private void setupRecyclerView() {
+
+        mAdapter = new PopularMoviesAdapter(mMovies,getActivity());
+        popularMoviesList.setAdapter(mAdapter);
+    }
+
     private void fetchData() {
+
+        progressBarPopular.setVisibility(View.VISIBLE);
 
         API moviesAPI = API.retrofit.create(API.class);
 
@@ -104,35 +114,19 @@ public class PopularMoviesFragment extends Fragment {
                 TMDBResponse result = response.body();
                 mMovies = (ArrayList<Movie>) result.getResults();
                 progressBarPopular.setVisibility(View.GONE);
+                setupRecyclerView();
                 mAdapter.notifyDataSetChanged();
+
             }
 
             @Override
             public void onFailure(Call<TMDBResponse> call, Throwable t) {
+                progressBarPopular.setVisibility(View.GONE);
 
             }
         });
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Log.v(TAG,"Popular OnCreate");
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.v(TAG,"Popular OnPause");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.v(TAG,"Popular OnResume");
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -141,68 +135,6 @@ public class PopularMoviesFragment extends Fragment {
         Log.v(TAG,"Popular Saving State");
 
     }
-
-    private class PopularMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
-        private ImageView mPosterImage;
-        private Movie mMovie;
-
-        public PopularMoviesViewHolder(View itemView) {
-            super(itemView);
-            mPosterImage= itemView.findViewById(R.id.poster);
-            itemView.setOnClickListener(this);
-        }
-
-
-        public void bind(Movie movie) {
-
-            mMovie=movie;
-            Picasso.with(getActivity()).load(AppConstants.IMAGE_URL+ AppConstants.IMAGE_SIZE_500 +movie.getPosterPath())
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.error)
-                    .into(mPosterImage);
-
-        }
-        @Override
-        public void onClick(View v) {
-
-            ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(getActivity(),mPosterImage,"posterImage");
-            ((openDetailsListener)getActivity()).openDetails(mMovie,options);
-        }
-
-
-    }
-
-    private class PopularMoviesAdapter extends RecyclerView.Adapter<PopularMoviesViewHolder>
-    {
-
-
-        @Override
-        public PopularMoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view= LayoutInflater.from(getActivity()).inflate(R.layout.movie_item,parent,false);
-
-            return new PopularMoviesViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(PopularMoviesViewHolder holder, int position) {
-            Movie movie=mMovies.get(position);
-            holder.bind(movie);
-
-
-        }
-
-        @Override
-        public int getItemCount() {
-
-            if (mMovies == null) {
-                return 0;
-            } else {
-                return mMovies.size();
-            }
-        }
-    }
-
 
 
     public interface openDetailsListener{
