@@ -17,6 +17,8 @@ import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.TMDBResponse;
 import com.execube.genesis.network.API;
 import com.execube.genesis.utils.AppConstants;
+import com.execube.genesis.utils.EndlessScrollListener;
+
 import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +40,7 @@ public class PopularMoviesFragment extends Fragment {
 
     // FIXME: 28/04/16 make it a field
     private PopularMoviesAdapter mAdapter;
+    private GridLayoutManager gridLayoutManager;
 
     public PopularMoviesFragment() {
         //empty constructor required
@@ -55,17 +58,20 @@ public class PopularMoviesFragment extends Fragment {
         deviceIsTablet= getResources().getBoolean(R.bool.is_tablet);
 
 
+        mAdapter = new PopularMoviesAdapter(mMovies,getActivity());
+
         if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
         {
             mMovies=savedInstanceState.getParcelableArrayList(POPULAR_MOVIES_ARRAY);
-         Log.d(TAG, "Popular onCreate: restoring " + mMovies.size());
+            mAdapter.setMovies(mMovies);
+            Log.d(TAG, "Popular onCreate: restoring " + mMovies.size());
 
         }
 
 
         if ( mMovies == null ) {
 
-            fetchData();
+            fetchData(1);
 
         } else {
 
@@ -76,41 +82,70 @@ public class PopularMoviesFragment extends Fragment {
             progressBarPopular.setVisibility(View.GONE);
         }
 
-        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 
-            popularMoviesList.setLayoutManager(new
-                    GridLayoutManager(getActivity(), 2));
-        }
-        else{
-            popularMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        }
 
         setupRecyclerView();
         return content;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(POPULAR_MOVIES_ARRAY,mMovies);//Saving state of the ArrayList to avoid the network calls.
+        Log.v(TAG,"Popular Saving State");
+
+    }
     private void setupRecyclerView() {
 
+        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            gridLayoutManager = new GridLayoutManager(getActivity(),2);
+        }
+        else{
+            gridLayoutManager = new GridLayoutManager(getActivity(),3);
+        }
+        popularMoviesList.setLayoutManager(gridLayoutManager);
+        popularMoviesList.addOnScrollListener(new EndlessScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                fetchData(page);
+            }
+        });
         mAdapter = new PopularMoviesAdapter(mMovies,getActivity());
         popularMoviesList.setAdapter(mAdapter);
+
     }
 
-    private void fetchData() {
+    private void fetchData(final int page) {
 
         progressBarPopular.setVisibility(View.VISIBLE);
 
         API moviesAPI = API.retrofit.create(API.class);
 
-        Call<TMDBResponse> call = moviesAPI.fetchPopularMovies(AppConstants.API_KEY,AppConstants.SORT_POPULARITY,1);
+        Call<TMDBResponse> call = moviesAPI.fetchPopularMovies(AppConstants.API_KEY,AppConstants.SORT_POPULARITY,page);
 
         call.enqueue(new Callback<TMDBResponse>() {
             @Override
             public void onResponse(Call<TMDBResponse> call, Response<TMDBResponse> response) {
-                TMDBResponse result = response.body();
-                mMovies = (ArrayList<Movie>) result.getResults();
-                progressBarPopular.setVisibility(View.GONE);
-                setupRecyclerView();
-                mAdapter.notifyDataSetChanged();
+
+                if(page>1)
+                {
+                    TMDBResponse result = response.body();
+                    mMovies.addAll(result.getResults());
+                    mAdapter.setMovies(mMovies);
+                    progressBarPopular.setVisibility(View.GONE);
+
+                }
+                else{
+
+                    TMDBResponse result = response.body();
+                    mMovies = (ArrayList<Movie>) result.getResults();
+                    progressBarPopular.setVisibility(View.GONE);
+                    setupRecyclerView();
+                    mAdapter.notifyDataSetChanged();
+                }
+
 
             }
 
@@ -123,13 +158,7 @@ public class PopularMoviesFragment extends Fragment {
     }
 
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(POPULAR_MOVIES_ARRAY,mMovies);//Saving state of the ArrayList to avoid the network calls.
-        super.onSaveInstanceState(outState);
-        Log.v(TAG,"Popular Saving State");
 
-    }
 
 
     public interface openDetailsListener{
