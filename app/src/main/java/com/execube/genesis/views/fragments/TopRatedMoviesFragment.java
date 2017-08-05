@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.execube.genesis.R;
+import com.execube.genesis.adapters.TopRatedMoviesAdapter;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.TMDBResponse;
 import com.execube.genesis.network.API;
@@ -49,27 +50,6 @@ public class TopRatedMoviesFragment extends Fragment {
 
 
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Log.v(TAG,"TopRated OnCreate");
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.v(TAG,"TopRated OnPause");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.v(TAG,"TopRated OnResume");
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
@@ -94,12 +74,13 @@ public class TopRatedMoviesFragment extends Fragment {
         }
 
         //Do a fresh network fetch if savedInstanceState == null
-        else{
+        if( mMovies == null){
             Log.d(TAG, "onCreate: network call");
 
             fetchData();
+        } else{
 
-
+            setupRecyclerView();
         }
 
 
@@ -119,14 +100,21 @@ public class TopRatedMoviesFragment extends Fragment {
         }
 
 
-        mAdapter=new TopRatedMoviesAdapter();
+        setupRecyclerView();
+        return content;
+
+    }
+
+    private void setupRecyclerView() {
+
+        mAdapter=new TopRatedMoviesAdapter(mMovies,getActivity());
         topRatedMoviesList.setAdapter(mAdapter);
 
-        return content;
     }
 
     private void fetchData() {
 
+        progressBarTopRated.setVisibility(View.VISIBLE);
         API moviesAPI = API.retrofit.create(API.class);
         Call<TMDBResponse> call = moviesAPI.fetchTopRatedMovies(AppConstants.API_KEY,AppConstants.SORT_R_RATED,1);
 
@@ -136,6 +124,7 @@ public class TopRatedMoviesFragment extends Fragment {
                 TMDBResponse result = response.body();
                 mMovies = (ArrayList<Movie>) result.getResults();
                 progressBarTopRated.setVisibility(GONE);
+                setupRecyclerView();
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -146,67 +135,6 @@ public class TopRatedMoviesFragment extends Fragment {
         });
 
     }
-
-
-    private class TopRatedMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
-        private ImageView mPosterImage;
-        private Movie mMovie;
-
-        public TopRatedMoviesViewHolder(View itemView) {
-            super(itemView);
-
-            mPosterImage = itemView.findViewById(R.id.poster);
-            itemView.setOnClickListener(this);
-        }
-
-        public void bind(Movie movie) {
-            mMovie=movie;
-            Picasso.with(getActivity()).load(AppConstants.IMAGE_URL + AppConstants.IMAGE_SIZE_500 + movie.getPosterPath())
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.error)
-                    .into(mPosterImage);
-        }
-
-        @Override
-        public void onClick(View v) {
-
-
-            ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(getActivity(),mPosterImage,"posterImage");
-            ((openDetailsListener)getActivity()).openDetails(mMovie,options);
-        }
-
-
-    }
-
-    private class TopRatedMoviesAdapter extends RecyclerView.Adapter<TopRatedMoviesViewHolder> {
-
-
-        @Override
-        public TopRatedMoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(getActivity()).inflate(R.layout.movie_item, parent, false);
-
-            return new TopRatedMoviesViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(TopRatedMoviesViewHolder holder, int position) {
-            Movie movie = mMovies.get(position);
-
-
-            holder.bind(movie);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            if(mMovies==null)
-                return 0;
-            else
-                return mMovies.size();
-        }
-    }
-
 
     public interface openDetailsListener{
         void openDetails(Movie movie,ActivityOptions options);
