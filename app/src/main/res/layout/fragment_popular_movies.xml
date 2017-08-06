@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/activity_main_swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <ProgressBar
+                android:id="@+id/progressBar_popular"
+                android:visibility="gone"
+                android:indeterminate="true"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true" />
+            <android.support.v7.widget.RecyclerView
+                android:visibility="visible"
+                android:id="@+id/popular_recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"/>
 
-    <!--fixme visibility was gone-->
-    <android.support.v7.widget.RecyclerView
-        android:visibility="visible"
-        android:id="@+id/popular_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        </RelativeLayout>
 
-    <!--fixme this was up top-->
-    <ProgressBar
-        android:id="@+id/progressBar_popular"
-        android:visibility="gone"
-        android:indeterminate="true"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerInParent="true"
-        />
 
-</RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
+

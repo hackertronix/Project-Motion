@@ -2,9 +2,11 @@ package com.execube.genesis.views.fragments;
 
 import android.app.ActivityOptions;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,7 +36,9 @@ public class PopularMoviesFragment extends Fragment {
     private static final String POPULAR_MOVIES_ARRAY ="popular_movies" ;
     private ArrayList<Movie> mMovies;
     private RecyclerView popularMoviesList = null;
+
     private View progressBarPopular = null;
+    private SwipeRefreshLayout layout;
     private boolean deviceIsTablet;
 
 
@@ -52,14 +56,20 @@ public class PopularMoviesFragment extends Fragment {
 
         View content = inflater.inflate(R.layout.fragment_popular_movies,container,false);
 
-
         popularMoviesList = content.findViewById(R.id.popular_recyclerView);
         progressBarPopular = content.findViewById(R.id.progressBar_popular);
+        layout = content.findViewById(R.id.activity_main_swipe_refresh_layout);
         deviceIsTablet= getResources().getBoolean(R.bool.is_tablet);
+
+
 
 
         mAdapter = new PopularMoviesAdapter(mMovies,getActivity());
 
+        layout.setEnabled(false);
+        layout.setRefreshing(false);
+
+        layout.setColorSchemeColors(getResources().getColor(R.color.accent));
         if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
         {
             mMovies=savedInstanceState.getParcelableArrayList(POPULAR_MOVIES_ARRAY);
@@ -73,9 +83,6 @@ public class PopularMoviesFragment extends Fragment {
 
             fetchData(1);
 
-        } else {
-
-            setupRecyclerView();
         }
 
         if (savedInstanceState != null) {
@@ -119,7 +126,14 @@ public class PopularMoviesFragment extends Fragment {
 
     private void fetchData(final int page) {
 
-        progressBarPopular.setVisibility(View.VISIBLE);
+        if(page == 1)
+        {
+            progressBarPopular.setVisibility(View.VISIBLE);
+
+        }else{
+            layout.setEnabled(true);
+            layout.setRefreshing(true);
+        }
 
         API moviesAPI = API.retrofit.create(API.class);
 
@@ -134,8 +148,8 @@ public class PopularMoviesFragment extends Fragment {
                     TMDBResponse result = response.body();
                     mMovies.addAll(result.getResults());
                     mAdapter.setMovies(mMovies);
-                    progressBarPopular.setVisibility(View.GONE);
-
+                    layout.setRefreshing(false);
+                    layout.setEnabled(false);
                 }
                 else{
 
