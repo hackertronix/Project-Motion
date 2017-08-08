@@ -119,25 +119,7 @@ public class DetailsFragment extends Fragment {
         dataSource = new MoviesDataSource();
         dataSource.open();
 
-        mBackdrop = view.findViewById(R.id.details_poster);
-
-        mDetailTitle = view.findViewById(R.id.detail_title_text);
-        mReleaseDate = view.findViewById(R.id.release_date);
-        mOverview = view.findViewById(R.id.overview);
-        mOverviewHeader = view.findViewById(R.id.overview_header);
-        mReviesHeader= view.findViewById(R.id.review_header);
-        mTrailersHeader= view.findViewById(R.id.trailer_header);
-
-        mRatingBar = view.findViewById(R.id.movie_rating);
-        mCoordinatorLayout= view.findViewById(R.id.coordinator_layout);
-        mReviewRecyclerView= view.findViewById(R.id.review_recycler_view);
-        mTrailerRecyclerView= view.findViewById(R.id.trailer_recycler_view);
-
-        mReviewsProgressbar= view.findViewById(R.id.reviews_progressbar);
-        mTrailersProgressbar= view.findViewById(R.id.trailers_progressbar);
-        mFloatingActionButton= view.findViewById(R.id.fab);
-
-        mReviewsCardView= view.findViewById(R.id.reviews_card);
+        findViews(view);
 
 
         intent = getActivity().getIntent();
@@ -155,8 +137,6 @@ public class DetailsFragment extends Fragment {
         mReviews = new ArrayList<>();
         mTrailers = new ArrayList<>();
 
-        setupReviewRecyclerView();
-        setupTrailersRecyclerView();
 
 
 
@@ -226,6 +206,28 @@ public class DetailsFragment extends Fragment {
         return view;
     }
 
+    private void findViews(View view) {
+        mBackdrop = view.findViewById(R.id.details_poster);
+
+        mDetailTitle = view.findViewById(R.id.detail_title_text);
+        mReleaseDate = view.findViewById(R.id.release_date);
+        mOverview = view.findViewById(R.id.overview);
+        mOverviewHeader = view.findViewById(R.id.overview_header);
+        mReviesHeader= view.findViewById(R.id.review_header);
+        mTrailersHeader= view.findViewById(R.id.trailer_header);
+
+        mRatingBar = view.findViewById(R.id.movie_rating);
+        mCoordinatorLayout= view.findViewById(R.id.coordinator_layout);
+        mReviewRecyclerView= view.findViewById(R.id.review_recycler_view);
+        mTrailerRecyclerView= view.findViewById(R.id.trailer_recycler_view);
+
+        mReviewsProgressbar= view.findViewById(R.id.reviews_progressbar);
+        mTrailersProgressbar= view.findViewById(R.id.trailers_progressbar);
+        mFloatingActionButton= view.findViewById(R.id.fab);
+
+        mReviewsCardView= view.findViewById(R.id.reviews_card);
+    }
+
     private void setupTrailersRecyclerView() {
         LinearLayoutManager layoutmanager= new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         mTrailerRecyclerView.setLayoutManager(layoutmanager);
@@ -255,6 +257,12 @@ public class DetailsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         dataSource.close();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
     }
 
