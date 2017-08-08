@@ -75,7 +75,6 @@ public class DetailsFragment extends Fragment {
 
     private ArrayList<Review> mReviews;
     private ArrayList<Trailer> mTrailers;
-    private List<Movie> updatedFavsList= new ArrayList<>();
 
     public static final String MOVIE_REVIEWS_ARRAY ="movie_details";
     private static final String MOVIE_TRAILERS_ARRAY = "movie_reviews";
@@ -153,6 +152,11 @@ public class DetailsFragment extends Fragment {
 
         assert mMovie != null;
 
+        mReviews = new ArrayList<>();
+        mTrailers = new ArrayList<>();
+
+        setupReviewRecyclerView();
+        setupTrailersRecyclerView();
 
 
 
@@ -160,6 +164,7 @@ public class DetailsFragment extends Fragment {
         mReleaseDate.setText(mMovie.getReleaseDate());
         mRatingBar.setProgress((int) mMovie.getVoteAverage());
         mOverview.setText(mMovie.getOverview());
+
 
 
         if (Build.VERSION.SDK_INT != 21) {
@@ -183,24 +188,32 @@ public class DetailsFragment extends Fragment {
             mReviews=savedInstanceState.getParcelableArrayList(MOVIE_REVIEWS_ARRAY);
             mTrailers=savedInstanceState.getParcelableArrayList(MOVIE_TRAILERS_ARRAY);
 
-            mReviewAdapter.notifyDataSetChanged();
-            mTrailerAdapter.notifyDataSetChanged();
+            if(mReviews.size()==0 || mTrailers.size()==0)
+            {
+                fetchReviews();
+                fetchTrailers();
+            }
 
-            mReviewsProgressbar.setVisibility(GONE);
-            mTrailersProgressbar.setVisibility(GONE);
+            else {
+
+
+                setupTrailersRecyclerView();
+                setupReviewRecyclerView();
+
+                mReviewsProgressbar.setVisibility(GONE);
+                mTrailersProgressbar.setVisibility(GONE);
+            }
+
+
 
         }
-        if( mTrailers == null || mReviews == null)
+        if( mTrailers == null || mReviews == null || mTrailers.size() ==0 || mReviews.size() ==0)
         {
             fetchTrailers();
             fetchReviews();
 
         }
-        else {
 
-            setupReviewRecyclerView();
-            setupTrailersRecyclerView();
-        }
 
         Picasso.with(getActivity()).load(AppConstants.IMAGE_URL + AppConstants.IMAGE_SIZE_500 + mMovie.getPosterPath())
                 .placeholder(R.drawable.placeholder)

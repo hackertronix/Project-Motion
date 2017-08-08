@@ -67,7 +67,6 @@ public class PopularMoviesFragment extends Fragment {
         mAdapter = new PopularMoviesAdapter(mMovies,getActivity());
 
         layout.setEnabled(false);
-        layout.setRefreshing(false);
 
         layout.setColorSchemeColors(getResources().getColor(R.color.accent));
         if(savedInstanceState!=null&&savedInstanceState.containsKey(POPULAR_MOVIES_ARRAY))
@@ -166,7 +165,8 @@ public class PopularMoviesFragment extends Fragment {
             @Override
             public void onFailure(Call<TMDBResponse> call, Throwable t) {
                 progressBarPopular.setVisibility(View.GONE);
-
+                layout.setEnabled(false);
+                layout.setRefreshing(false);
             }
         });
     }

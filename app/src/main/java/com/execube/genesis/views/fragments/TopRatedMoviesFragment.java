@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.TMDBResponse;
 import com.execube.genesis.network.API;
 import com.execube.genesis.utils.AppConstants;
+import com.execube.genesis.utils.EndlessScrollListener;
 
 import java.util.ArrayList;
 
@@ -39,7 +41,9 @@ public class TopRatedMoviesFragment extends Fragment {
     private ArrayList<Movie> mMovies;
     private RecyclerView topRatedMoviesList = null;
     private View progressBarTopRated = null;
+    private SwipeRefreshLayout layout;
     private TopRatedMoviesAdapter mAdapter;
+    private GridLayoutManager gridLayoutManager;
 
 
 
@@ -62,7 +66,13 @@ public class TopRatedMoviesFragment extends Fragment {
         View content = inflater.inflate(R.layout.fragment_top_rated_movies, container, false);
         topRatedMoviesList = content.findViewById(R.id.top_rated_recyclerView);
         progressBarTopRated = content.findViewById(R.id.progressBar_top_rated);
+        layout = content.findViewById(R.id.top_rated_swipeRefreshLayout);
 
+        layout.setEnabled(false);
+
+
+
+        mAdapter = new TopRatedMoviesAdapter(mMovies,getActivity());
 
         // restore from savedInstanceState if  state was saved
         if(savedInstanceState!=null&&savedInstanceState.containsKey(TOP_RATED_MOVIES_ARRAY))
@@ -75,10 +85,7 @@ public class TopRatedMoviesFragment extends Fragment {
         if( mMovies == null){
             Log.d(TAG, "onCreate: network call");
 
-            fetchData();
-        } else{
-
-            setupRecyclerView();
+            fetchData(1);
         }
 
 
@@ -89,13 +96,7 @@ public class TopRatedMoviesFragment extends Fragment {
         }
 
         // CHECKING FOR DEVICE ORIENTATION TO SET NUMBER OF GRID VIEW COLUMNS
-        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
 
-            topRatedMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        }
-        else{
-            topRatedMoviesList.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        }
 
 
         setupRecyclerView();
@@ -105,30 +106,71 @@ public class TopRatedMoviesFragment extends Fragment {
 
     private void setupRecyclerView() {
 
+        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            gridLayoutManager = new GridLayoutManager(getActivity(),2);
+
+        }
+        else{
+            gridLayoutManager = new GridLayoutManager(getActivity(),3);
+        }
+
+        topRatedMoviesList.setLayoutManager(gridLayoutManager);
+        topRatedMoviesList.addOnScrollListener(new EndlessScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                fetchData(page);
+            }
+        });
         mAdapter=new TopRatedMoviesAdapter(mMovies,getActivity());
         topRatedMoviesList.setAdapter(mAdapter);
 
     }
 
-    private void fetchData() {
+    private void fetchData(final int page) {
 
-        progressBarTopRated.setVisibility(View.VISIBLE);
+        if(page == 1)
+        {
+            progressBarTopRated.setVisibility(View.VISIBLE);
+
+        }else {
+            layout.setEnabled(true);
+            layout.setRefreshing(true);
+        }
+
         API moviesAPI = API.retrofit.create(API.class);
-        Call<TMDBResponse> call = moviesAPI.fetchTopRatedMovies(AppConstants.API_KEY,AppConstants.SORT_R_RATED,1);
+        Call<TMDBResponse> call = moviesAPI.fetchTopRatedMovies(AppConstants.API_KEY,AppConstants.SORT_R_RATED,page);
 
         call.enqueue(new Callback<TMDBResponse>() {
             @Override
             public void onResponse(Call<TMDBResponse> call, Response<TMDBResponse> response) {
-                TMDBResponse result = response.body();
-                mMovies = (ArrayList<Movie>) result.getResults();
-                progressBarTopRated.setVisibility(GONE);
-                setupRecyclerView();
-                mAdapter.notifyDataSetChanged();
+                if(page > 1)
+                {
+                    TMDBResponse result = response.body();
+                    mMovies.addAll(result.getResults());
+                    mAdapter.setMovies(mMovies);
+                    layout.setRefreshing(false);
+                    layout.setEnabled(false);
+                }
+
+                else{
+
+                    TMDBResponse result = response.body();
+                    mMovies = (ArrayList<Movie>) result.getResults();
+                    progressBarTopRated.setVisibility(GONE);
+                    setupRecyclerView();
+                    mAdapter.notifyDataSetChanged();
+
+                }
+
             }
 
             @Override
             public void onFailure(Call<TMDBResponse> call, Throwable t) {
 
+                progressBarTopRated.setVisibility(View.GONE);
+                layout.setEnabled(false);
+                layout.setRefreshing(false);
             }
         });
 

@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:id="@+id/top_rated_swipeRefreshLayout">
 
-<ProgressBar
-    android:id="@+id/progressBar_top_rated"
-    android:indeterminate="true"
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:layout_centerInParent="true"
-    />
-
-<android.support.v7.widget.RecyclerView
-    android:visibility="visible"
-    android:id="@+id/top_rated_recyclerView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
-</RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar_top_rated"
+            android:indeterminate="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:visibility="visible"
+            android:id="@+id/top_rated_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+
+
+</android.support.v4.widget.SwipeRefreshLayout>

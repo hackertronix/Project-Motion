@@ -62,8 +62,13 @@ public class PopularMoviesAdapter extends RecyclerView.Adapter<PopularMoviesAdap
 
     public void setMovies(ArrayList<Movie> listOfMovies) {
         mMovies = listOfMovies;
-        notifyItemRangeChanged(0, listOfMovies.size());
-        notifyDataSetChanged();
+        if(listOfMovies!=null)
+        {
+            notifyItemRangeChanged(0, listOfMovies.size());
+            notifyDataSetChanged();
+        }
+
+
 
     }
 

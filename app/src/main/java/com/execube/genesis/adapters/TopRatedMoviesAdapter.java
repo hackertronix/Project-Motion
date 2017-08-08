@@ -55,6 +55,19 @@ public class TopRatedMoviesAdapter extends RecyclerView.Adapter<TopRatedMoviesAd
             return mMovies.size();
     }
 
+    public void setMovies(ArrayList<Movie> listMovies) {
+        mMovies = listMovies;
+
+        if( listMovies!=null)
+        {
+            notifyItemRangeChanged(0,listMovies.size());
+            notifyDataSetChanged();
+        }
+
+
+
+    }
+
     public class TopRatedMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView mPosterImage;
