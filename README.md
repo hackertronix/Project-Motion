@@ -16,13 +16,12 @@ The app queries **TheMovieDB API** to fetch the **popular** and **top-rated** mo
    [**/app/src/main/java/com/execube/genesis/utils/API.java**](https://github.com/Hackertronix/Project-Motion/blob/master/app%2Fsrc%2Fmain%2Fjava%2Fcom%2Fexecube%2Fgenesis%2Futils%2FAPI.java)
    file
 
+
 <br />
 <br />
-<br />
-<br />
-<br />
-<br />
+
 #### Screenshots
+
 <br />
 <br />
 <br />
@@ -36,36 +35,6 @@ The app queries **TheMovieDB API** to fetch the **popular** and **top-rated** mo
 
 
 
-
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
 <br />
 <br />
 <br />
