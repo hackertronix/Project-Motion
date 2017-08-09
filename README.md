@@ -16,67 +16,73 @@ The app queries **TheMovieDB API** to fetch the **popular** and **top-rated** mo
    [**/app/src/main/java/com/execube/genesis/utils/API.java**](https://github.com/Hackertronix/Project-Motion/blob/master/app%2Fsrc%2Fmain%2Fjava%2Fcom%2Fexecube%2Fgenesis%2Futils%2FAPI.java)
    file
 
-</br>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+#### Screenshots
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 
-####Screenshots
 <img src="https://github.com/Hackertronix/Project-Motion/blob/master/art%2FScreenshot-1.png" width="360" height="640" align="left" hspace="20" >
 <img src="https://github.com/Hackertronix/Project-Motion/blob/master/art%2FScreenshot-2.png" width="360" height="640" align="right" hspace="20" >
 
 
 
 
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 
-
-
-###Libraries used :-
+### Libraries used :-
 
  - [**Retrofit**](http://square.github.io/retrofit/)
  - [**Picasso**](http://square.github.io/picasso/)
  - [**Otto**](http://square.github.io/otto/)
  - [**Realm**](http://realm.io)
  - [**Android Design Support Library**](http://android-developers.blogspot.in/2015/05/android-design-support-library.html)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
