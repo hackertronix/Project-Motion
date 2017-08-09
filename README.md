@@ -25,16 +25,65 @@ The app queries **TheMovieDB API** to fetch the **popular** and **top-rated** mo
 <br />
 <br />
 <br />
-<br />
-<br />
-<br />
-<br />
+
 
 <img src="https://github.com/Hackertronix/Project-Motion/blob/master/art%2FScreenshot-1.png" width="360" height="640" align="left" hspace="20" >
 <img src="https://github.com/Hackertronix/Project-Motion/blob/master/art%2FScreenshot-2.png" width="360" height="640" align="right" hspace="20" >
 
 
 
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 <br />
 <br />
 <br />
