@@ -16,6 +16,9 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 26
@@ -33,6 +36,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'TMDB_API_KEY', keystoreProperties['TMDBApiKey']
     }
 }
 
