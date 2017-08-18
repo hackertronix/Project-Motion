@@ -350,8 +350,8 @@ public class DetailsFragment extends Fragment {
                 {
                     dataSource.deleteMovieFromDB(movie);
 
-                    Event event = new Event("Database has been modified!!");
-                    EventBus.getBus().post(event);
+//                    Event event = new Event("Database has been modified!!");
+//                    EventBus.getBus().post(event);
 
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie removed from Favourites!!",Snackbar.LENGTH_SHORT);
