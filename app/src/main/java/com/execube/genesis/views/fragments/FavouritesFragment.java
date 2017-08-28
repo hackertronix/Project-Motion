@@ -13,15 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.execube.genesis.R;
 import com.execube.genesis.adapters.FavouritesAdapter;
-import com.execube.genesis.model.Event;
+import com.execube.genesis.database.MoviesDataSource;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.utils.EventBus;
-import com.execube.genesis.database.MoviesDataSource;
-import com.squareup.otto.Subscribe;
-
+import com.execube.genesis.utils.RxEventBus;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ import java.util.List;
  */
 public class FavouritesFragment extends Fragment {
 
-    public static final String TAG= "TAG";
+    public static final String TAG= "FAV";
     private static final String FAVOURITE_MOVIES_ARRAY = "favourite_movies";
     private List<Movie> mMovies=new ArrayList<>();
     private RecyclerView mFavouritesRecyclerView;
@@ -51,13 +52,30 @@ public class FavouritesFragment extends Fragment {
 
     @Override
     public void onResume() {
-
-
-     /*   Sugar ORM does not have a Loader
-          so to refresh the recyclerview adapter I am reinitializing it*/
         super.onResume();
-        EventBus.getBus().register(this);
-        Log.v(TAG,"Favourite OnResume");
+        Log.d(TAG, "Favourite onResume");
+
+        Observable<String> observable = RxEventBus.getInstance().getMessage();
+
+        observable.subscribe(new Observer<String>() {
+            @Override public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override public void onNext(@NonNull String s) {
+                Toast.makeText(getContext(), "Message Received: " + s, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "RX Event Received");
+            }
+
+            @Override public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override public void onComplete() {
+
+            }
+        });
+
 
         //TODO 1: Fix with Realm
 
@@ -73,18 +91,19 @@ public class FavouritesFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         dataSource.close();
-
+        Log.d(TAG, "Favourites onDestroyView ");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
         Log.v(TAG,"Favourite OnPause");
-        EventBus.getBus().unregister(this);
     }
 
-
+    @Override public void onStart() {
+        super.onStart();
+      Log.d(TAG, "Favourite onStart");
+    }
 
     @Nullable
     @Override
@@ -146,20 +165,19 @@ public class FavouritesFragment extends Fragment {
     }
 
 
-    @Subscribe
 
     //WorkAround to achieve Database Synchronisation with the Favourites RecyclerView
 
-    public void onEventReceived(Event event)
-    {
-      String message= event.getMessage();
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-
-        //TODO 3: Fix with Realm
-        mMovies=dataSource.getAllMovies();
-        mAdapter=new FavouritesAdapter((ArrayList<Movie>) mMovies,getActivity());
-        mFavouritesRecyclerView.setAdapter(mAdapter);
-        mFavouritesRecyclerView.invalidateItemDecorations();
-    }
+    //    public void onEventReceived(Event event)
+    //    {
+    //      String message= event.getMessage();
+    //        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    //
+    //        //TODO 3: Fix with Realm
+    //        mMovies=dataSource.getAllMovies();
+    //        mAdapter=new FavouritesAdapter((ArrayList<Movie>) mMovies,getActivity());
+    //        mFavouritesRecyclerView.setAdapter(mAdapter);
+    //        mFavouritesRecyclerView.invalidateItemDecorations();
+    //    }
 }
 

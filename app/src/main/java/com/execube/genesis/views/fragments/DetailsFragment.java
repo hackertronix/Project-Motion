@@ -38,6 +38,7 @@ import com.execube.genesis.network.API;
 import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.utils.EventBus;
 import com.execube.genesis.database.MoviesDataSource;
+import com.execube.genesis.utils.RxEventBus;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -353,6 +354,8 @@ public class DetailsFragment extends Fragment {
 //                    Event event = new Event("Database has been modified!!");
 //                    EventBus.getBus().post(event);
 
+                    RxEventBus.getInstance().setMessage("DB CHANGED");
+
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie removed from Favourites!!",Snackbar.LENGTH_SHORT);
                     View view= snackbar.getView();
@@ -367,8 +370,10 @@ public class DetailsFragment extends Fragment {
                     ////TODO 6: Inspect Behaviour
 
                     dataSource.InsertMovieToDB(entry);
-                    Event event = new Event("Database has been modified!!");
-                    EventBus.getBus().post(event);
+//                    Event event = new Event("Database has been modified!!");
+//                    EventBus.getBus().post(event);
+
+                    RxEventBus.getInstance().setMessage("DB Changed");
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_black_24dp);
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie added to Favourites!!",Snackbar.LENGTH_SHORT);
                     View view= snackbar.getView();
