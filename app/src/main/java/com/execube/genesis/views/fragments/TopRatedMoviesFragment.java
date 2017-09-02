@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.execube.genesis.R;
+import com.execube.genesis.adapters.GenericAdapter;
 import com.execube.genesis.adapters.TopRatedMoviesAdapter;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.TMDBResponse;
@@ -42,7 +43,7 @@ public class TopRatedMoviesFragment extends Fragment {
     private RecyclerView topRatedMoviesList = null;
     private View progressBarTopRated = null;
     private SwipeRefreshLayout layout;
-    private TopRatedMoviesAdapter mAdapter;
+    private GenericAdapter mAdapter;
     private GridLayoutManager gridLayoutManager;
 
 
@@ -72,7 +73,7 @@ public class TopRatedMoviesFragment extends Fragment {
 
 
 
-        mAdapter = new TopRatedMoviesAdapter(mMovies,getActivity());
+        mAdapter = new GenericAdapter(mMovies,getActivity());
 
         // restore from savedInstanceState if  state was saved
         if(savedInstanceState!=null&&savedInstanceState.containsKey(TOP_RATED_MOVIES_ARRAY))
@@ -122,7 +123,7 @@ public class TopRatedMoviesFragment extends Fragment {
                 fetchData(page);
             }
         });
-        mAdapter=new TopRatedMoviesAdapter(mMovies,getActivity());
+        mAdapter=new GenericAdapter(mMovies,getActivity());
         topRatedMoviesList.setAdapter(mAdapter);
 
     }

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import com.execube.genesis.R;
 import com.execube.genesis.adapters.FavouritesAdapter;
+import com.execube.genesis.adapters.GenericAdapter;
 import com.execube.genesis.database.MoviesDataSource;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.utils.EventBus;
@@ -36,7 +37,7 @@ public class FavouritesFragment extends Fragment {
     private List<Movie> mMovies=new ArrayList<>();
     private RecyclerView mFavouritesRecyclerView;
     ArrayList<Movie> moviesArrayList;
-    private FavouritesAdapter mAdapter;
+    private GenericAdapter mAdapter;
     private TabLayout mTabLayout;
     private MoviesDataSource dataSource;
 
@@ -81,7 +82,7 @@ public class FavouritesFragment extends Fragment {
 
 
         mMovies=dataSource.getAllMovies();
-        mAdapter=new FavouritesAdapter((ArrayList<Movie>) mMovies,getActivity());
+        mAdapter=new GenericAdapter((ArrayList<Movie>) mMovies,getActivity());
         mFavouritesRecyclerView.setAdapter(mAdapter);
         mFavouritesRecyclerView.invalidate();
 
@@ -137,7 +138,7 @@ public class FavouritesFragment extends Fragment {
         else{
             mFavouritesRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         }
-        mAdapter= new FavouritesAdapter((ArrayList<Movie>) mMovies,getActivity());
+        mAdapter= new GenericAdapter((ArrayList<Movie>) mMovies,getActivity());
         mFavouritesRecyclerView.setAdapter(mAdapter);
         mFavouritesRecyclerView.invalidate();
         return view;
