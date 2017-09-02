@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.execube.genesis.R;
 import com.execube.genesis.adapters.GenericAdapter;
-import com.execube.genesis.adapters.PopularMoviesAdapter;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.TMDBResponse;
 import com.execube.genesis.network.API;

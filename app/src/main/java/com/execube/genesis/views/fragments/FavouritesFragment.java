@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.execube.genesis.R;
-import com.execube.genesis.adapters.FavouritesAdapter;
 import com.execube.genesis.adapters.GenericAdapter;
 import com.execube.genesis.database.MoviesDataSource;
 import com.execube.genesis.model.Movie;
