@@ -20,57 +20,59 @@ import java.util.ArrayList;
  * Created by hackertronix on 06/08/17.
  */
 
-public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.FavouritesViewHolder>{
+public class FavouritesAdapter
+    extends RecyclerView.Adapter<FavouritesAdapter.FavouritesViewHolder> {
 
-    private ArrayList<Movie> mMovies;
-    private Activity mActivity;
+  private ArrayList<Movie> mMovies;
 
-    public FavouritesAdapter(ArrayList<Movie> mMovies, Activity mActivity) {
-        this.mMovies = mMovies;
-        this.mActivity = mActivity;
+  private Activity mActivity;
+
+  public FavouritesAdapter(ArrayList<Movie> mMovies, Activity mActivity) {
+    this.mMovies = mMovies;
+    this.mActivity = mActivity;
+  }
+
+  @Override public FavouritesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    View view =
+        LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item, parent, false);
+    return new FavouritesViewHolder(view);
+  }
+
+  @Override public void onBindViewHolder(FavouritesViewHolder holder, int position) {
+
+    Movie movie = mMovies.get(position);
+    holder.bind(movie);
+  }
+
+  @Override public int getItemCount() {
+    return mMovies.size();
+  }
+
+  public class FavouritesViewHolder extends RecyclerView.ViewHolder
+      implements View.OnClickListener {
+    private ImageView mPosterImageView;
+    private Movie mMovie;
+
+    public FavouritesViewHolder(View itemView) {
+      super(itemView);
+      mPosterImageView = itemView.findViewById(R.id.poster);
+      itemView.setOnClickListener(this);
     }
 
-    @Override
-    public FavouritesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item,parent,false);
-        return new FavouritesViewHolder(view);    }
-
-    @Override
-    public void onBindViewHolder(FavouritesViewHolder holder, int position) {
-
-        Movie movie= mMovies.get(position);
-        holder.bind(movie);
+    public void bind(Movie movie) {
+      mMovie = movie;
+      Picasso.with(mActivity)
+          .load(AppConstants.IMAGE_URL + AppConstants.IMAGE_SIZE_500 + mMovie.getPosterPath())
+          .placeholder(R.drawable.placeholder)
+          .error(R.drawable.error)
+          .into(mPosterImageView);
     }
 
-    @Override
-    public int getItemCount() {
-        return mMovies.size();
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP) @Override public void onClick(View v) {
+
+      ActivityOptions options =
+          ActivityOptions.makeSceneTransitionAnimation(mActivity, mPosterImageView, "posterImage");
+      ((FavouritesFragment.openDetailsListener) mActivity).openDetails(mMovie, options);
     }
-
-    public class FavouritesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView mPosterImageView;
-        private Movie mMovie;
-        public FavouritesViewHolder(View itemView) {
-            super(itemView);
-            mPosterImageView= itemView.findViewById(R.id.poster);
-            itemView.setOnClickListener(this);
-        }
-
-        public void bind(Movie movie)
-        {
-            mMovie=movie;
-            Picasso.with(mActivity).load(AppConstants.IMAGE_URL+ AppConstants.IMAGE_SIZE_500+mMovie.getPosterPath())
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.error)
-                    .into(mPosterImageView);
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onClick(View v) {
-
-            ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(mActivity,mPosterImageView,"posterImage");
-            ((FavouritesFragment.openDetailsListener)mActivity).openDetails(mMovie,options);
-        }
-    }
+  }
 }

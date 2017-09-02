@@ -8,11 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.execube.genesis.R;
 import com.execube.genesis.model.Review;
-import com.execube.genesis.views.fragments.DetailsFragment;
-
 import java.util.ArrayList;
 
 /**

@@ -3,20 +3,17 @@ package com.execube.genesis.adapters;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.execube.genesis.R;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.views.fragments.PopularMoviesFragment;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 /**
@@ -81,6 +78,7 @@ public class PopularMoviesAdapter extends RecyclerView.Adapter<PopularMoviesAdap
 
         public PopularMoviesViewHolder(View itemView) {
             super(itemView);
+
             mPosterImage= itemView.findViewById(R.id.poster);
             itemView.setOnClickListener(this);
         }
