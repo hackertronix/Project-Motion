@@ -2,7 +2,6 @@ package com.execube.genesis.views.fragments;
 
 import android.app.ActivityOptions;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,13 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.execube.genesis.R;
+import com.execube.genesis.adapters.GenericAdapter;
 import com.execube.genesis.adapters.PopularMoviesAdapter;
 import com.execube.genesis.model.Movie;
 import com.execube.genesis.model.TMDBResponse;
 import com.execube.genesis.network.API;
 import com.execube.genesis.utils.AppConstants;
 import com.execube.genesis.utils.EndlessScrollListener;
-
 import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,7 +42,7 @@ public class PopularMoviesFragment extends Fragment {
 
 
     // FIXME: 28/04/16 make it a field
-    private PopularMoviesAdapter mAdapter;
+    private GenericAdapter mAdapter;
     private GridLayoutManager gridLayoutManager;
 
     public PopularMoviesFragment() {
@@ -61,10 +60,7 @@ public class PopularMoviesFragment extends Fragment {
         layout = content.findViewById(R.id.activity_main_swipe_refresh_layout);
         deviceIsTablet= getResources().getBoolean(R.bool.is_tablet);
 
-
-
-
-        mAdapter = new PopularMoviesAdapter(mMovies,getActivity());
+        mAdapter = new GenericAdapter(mMovies, getActivity());
 
         layout.setEnabled(false);
 
@@ -118,7 +114,7 @@ public class PopularMoviesFragment extends Fragment {
                 fetchData(page);
             }
         });
-        mAdapter = new PopularMoviesAdapter(mMovies,getActivity());
+        mAdapter = new GenericAdapter(mMovies,getActivity());
         popularMoviesList.setAdapter(mAdapter);
 
     }
