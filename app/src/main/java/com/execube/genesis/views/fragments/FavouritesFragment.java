@@ -172,7 +172,7 @@ public class FavouritesFragment extends Fragment {
     //    {
     //      String message= event.getMessage();
     //        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    //
+    //d
     //        //TODO 3: Fix with Realm
     //        mMovies=dataSource.getAllMovies();
     //        mAdapter=new FavouritesAdapter((ArrayList<Movie>) mMovies,getActivity());
