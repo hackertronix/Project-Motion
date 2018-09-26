@@ -7,16 +7,16 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.execube.genesis.R;
 import com.execube.genesis.model.Event;
@@ -48,9 +47,6 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Response;
-
-import static com.execube.genesis.R.drawable.ic_favorite_black_24dp;
-
 
 /**
  * Created by Prateek Phoenix on 4/30/2016.
@@ -260,7 +256,7 @@ public class DetailsFragment extends Fragment {
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie removed from Favourites!!",Snackbar.LENGTH_SHORT);
                     View view= snackbar.getView();
-                    TextView textView = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView textView = (TextView)view.findViewById(com.google.android.material.R.id.snackbar_text);
                     textView.setTextColor(Color.YELLOW);
                     snackbar.show();
                 }
@@ -273,7 +269,7 @@ public class DetailsFragment extends Fragment {
                     mFloatingActionButton.setImageResource(R.drawable.ic_favorite_black_24dp);
                     Snackbar snackbar = Snackbar.make(mCoordinatorLayout,"Movie added to Favourites!!",Snackbar.LENGTH_SHORT);
                     View view= snackbar.getView();
-                    TextView textView = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView textView = (TextView)view.findViewById(com.google.android.material.R.id.snackbar_text);
                     textView.setTextColor(Color.YELLOW);
                     snackbar.show();
                 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -22,7 +22,7 @@
                android:layout_height="match_parent"
                android:layout_marginTop="100dp">
 
-               <android.support.v7.widget.CardView
+               <androidx.cardview.widget.CardView
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:layout_gravity="center|bottom"
@@ -39,7 +39,7 @@
                        android:layout_width="match_parent"
                        android:layout_height="match_parent">
 
-                       <android.support.v4.widget.Space
+                       <androidx.legacy.widget.Space
                            android:layout_width="match_parent"
                            android:layout_height="220dp"
                            android:id="@+id/blank_space"/>
@@ -86,9 +86,9 @@
 
                    </RelativeLayout>
 
-               </android.support.v7.widget.CardView>
+               </androidx.cardview.widget.CardView>
 
-               <android.support.v7.widget.CardView
+               <androidx.cardview.widget.CardView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    app:cardElevation="20dp"
@@ -106,12 +106,12 @@
                        android:scaleType="fitXY"
                        />
 
-               </android.support.v7.widget.CardView>
+               </androidx.cardview.widget.CardView>
 
 
 
            </FrameLayout>
-           <android.support.v7.widget.CardView
+           <androidx.cardview.widget.CardView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -153,14 +153,14 @@
 
 
 
-   </android.support.v7.widget.CardView>
+   </androidx.cardview.widget.CardView>
            <!--  TRAILERS UNIT-->
 
            <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="match_parent">
 
-               <android.support.v7.widget.CardView
+               <androidx.cardview.widget.CardView
                    android:layout_width="match_parent"
                    android:layout_height="190dp"
                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -194,9 +194,9 @@
                        android:layout_centerVertical="true"
                        android:layout_centerHorizontal="true"/>
 
-               </android.support.v7.widget.CardView>
+               </androidx.cardview.widget.CardView>
 
-               <android.support.v7.widget.RecyclerView
+               <androidx.recyclerview.widget.RecyclerView
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:layout_marginTop="60dp"
@@ -213,7 +213,7 @@
 
            <!--REVIEWS UNIT-->
 
-           <android.support.v7.widget.CardView
+           <androidx.cardview.widget.CardView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -245,7 +245,7 @@
                        android:layout_below="@+id/review_header">
 
 
-                       <android.support.v7.widget.RecyclerView
+                       <androidx.recyclerview.widget.RecyclerView
                            android:layout_width="match_parent"
                            android:layout_height="wrap_content"
                            android:id="@+id/review_recycler_view"
@@ -264,13 +264,13 @@
                        android:layout_centerHorizontal="true"/>
                </RelativeLayout>
 
-           </android.support.v7.widget.CardView>
+           </androidx.cardview.widget.CardView>
         </LinearLayout>
 
 
 
     </ScrollView>
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         app:fabSize="normal"
         android:layout_width="wrap_content"
@@ -282,4 +282,4 @@
         app:layout_anchor="@id/scrollView"
         app:rippleColor="#fff"
         app:layout_anchorGravity="bottom|right"/>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

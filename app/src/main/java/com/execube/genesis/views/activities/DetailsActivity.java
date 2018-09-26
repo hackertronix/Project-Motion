@@ -1,16 +1,13 @@
 package com.execube.genesis.views.activities;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.transition.Fade;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import android.transition.Slide;
 import android.view.Gravity;
-import android.view.View;
 
 import com.execube.genesis.R;
 import com.execube.genesis.views.fragments.DetailsFragment;

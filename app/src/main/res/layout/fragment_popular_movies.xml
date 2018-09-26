@@ -4,7 +4,7 @@
                 android:layout_height="match_parent">
 
     <!--fixme visibility was gone-->
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:visibility="visible"
         android:id="@+id/popular_recyclerView"
         android:layout_width="match_parent"
