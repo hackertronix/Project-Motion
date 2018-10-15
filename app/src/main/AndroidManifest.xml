@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.execube.genesis"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.execube.genesis">
 
+  <uses-permission android:name="android.permission.INTERNET"/>
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <application
-        android:name=".MyApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".views.activities.MoviesActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+  <application
+      android:name=".MyApplication"
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:supportsRtl="true"
+      android:theme="@style/AppTheme">
+    <activity android:name=".host.HostActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".views.activities.DetailsActivity">
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
 
-        </activity>
-       <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="f61375f6d805385167adaed63d0eb0ef1f66b7dd" />
+    <meta-data
+        android:name="io.fabric.ApiKey"
+        android:value="f61375f6d805385167adaed63d0eb0ef1f66b7dd"/>
+    <meta-data
+        android:name="DATABASE"
+        android:value="favourites.db"/>
+    <meta-data
+        android:name="VERSION"
+        android:value="2"/>
+    <meta-data
+        android:name="QUERY_LOG"
+        android:value="true"/>
+    <meta-data
+        android:name="DOMAIN_PACKAGE_NAME"
+        android:value="com.execube.genesis.model"/>
 
-        <meta-data android:name="DATABASE" android:value="favourites.db" />
-        <meta-data android:name="VERSION" android:value="2" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.execube.genesis.model" />
-
-    </application>
+  </application>
 
 </manifest>
